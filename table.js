@@ -28,6 +28,7 @@ define([], function() {
 
     function _addTableBody(newTable, tableRowsHTML) {
         let tableBody = _appendElement(newTable, `tbody`);
+        tableBody.setAttribute(`id`, `tBody`);
         tableBody.innerHTML = tableRowsHTML;
     }
 
