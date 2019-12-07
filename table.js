@@ -1,25 +1,28 @@
 define([], function() {
 
-    function createTable(divId, tableId, headData, tableRowsHTML) {
+    function createTable(divId, tableId, headData, tableRowsHTML, head2Data, footData) {
         let newTable = document.createElement(`table`);
         newTable.setAttribute(`id`, tableId);
         newTable.setAttribute(`class`, `table table-striped table-bordered table-hover table-sm`);
         let divElement = document.getElementById(divId);
         divElement.innerHTML = ``;
         divElement.appendChild(newTable);
-        _addTableDivision(newTable, `thead`, headData);
+        _addTableDivision(newTable, `thead`, headData, head2Data);
         _addTableBody(newTable, tableRowsHTML);
-        _addTableDivision(newTable, `tfoot`, headData);
+        if (footData) {
+            _addTableDivision(newTable, `tfoot`, footData);
+        } else {
+            _addTableDivision(newTable, `tfoot`, headData, head2Data);
+        }
     }
 
-    function _addTableDivision(newTable, divisionName, dataObject) {
-        let { headRowArray, rowSpans, colSpans, align, head2 } = dataObject;
+    function _addTableDivision(newTable, divisionName, dataArray, dataArray2) {
         let tableDivision = _appendElement(newTable, divisionName);
         let tableRow = _appendElement(tableDivision, `tr`);
-        _addData(tableRow, headRowArray, rowSpans, colSpans, align);
-        if (head2) {
+        _addData(tableRow, dataArray);
+        if (dataArray2) {
             let tableRow2 = _appendElement(tableDivision, `tr`);
-            _addData(tableRow2, head2);
+            _addData(tableRow2, dataArray2);
         }
     }
 
@@ -34,28 +37,45 @@ define([], function() {
         return newElement;
     }
 
-    function _addData(rowElement, dataArray, rowSpans, colSpans, align) {
-        for (let i = 0; i < dataArray.length; i++) {
+    function _addData(rowElement, dataArray) {
+        dataArray.forEach(dataObject => {
             let th = document.createElement('th');
-            if (rowSpans && rowSpans[i]) {
-                th.setAttribute(`rowspan`, rowSpans[i]);
+            if (typeof dataObject === `string`) {
+                th.innerHTML = dataObject;
+            } else {
+                let { id, align, additionalClass, rowspan, colspan, text } = dataObject;
+                if (id) {
+                    th.setAttribute(`id`, id);
+                }
+                if (align) {
+                    th.setAttribute(`class`, `text-${align}`);
+                }
+                if (additionalClass) {
+                    _addToAttribute(th, `class`, additionalClass);
+                }
+                if (rowspan) {
+                    th.setAttribute(`rowspan`, rowspan);
+                }
+                if (colspan) {
+                    th.setAttribute(`colspan`, colspan);
+                }
+                if (text) {
+                    th.innerHTML = text;
+                }
             }
-            if (colSpans && colSpans[i]) {
-                th.setAttribute(`colspan`, colSpans[i]);
-            }
-            if (align && align[i]) {
-                th.setAttribute(`class`, _getAlignText(align[i]));
-            }
-            th.innerHTML = dataArray[i];
             rowElement.appendChild(th);
-        }
+        });
     }
 
-    function _getAlignText(alignCode) {
-        if (alignCode === 1) {
-            return `text-center`;
+    function _addToAttribute(currentElement, name, newText) {
+        let oldValue = currentElement.getAttribute(name);
+        let newValue;
+        if (oldValue) {
+            newValue = `${oldValue} ${newText}`;
+        } else {
+            newValue = newText;
         }
-        return ``;
+        return currentElement.setAttribute(name, newValue)
     }
 
     return {
