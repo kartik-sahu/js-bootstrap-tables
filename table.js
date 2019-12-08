@@ -1,6 +1,6 @@
 define([], function() {
 
-    function createTable(divId, tableId, headData, tableRowsHTML, head2Data, footData) {
+    function createTable(divId, tableId, headData, dataRows, head2Data, footData) {
         let newTable = document.createElement(`table`);
         newTable.setAttribute(`id`, tableId);
         newTable.setAttribute(`class`, `table table-striped table-bordered table-hover table-sm`);
@@ -8,7 +8,7 @@ define([], function() {
         divElement.innerHTML = ``;
         divElement.appendChild(newTable);
         _addTableDivision(newTable, `thead`, headData, head2Data);
-        _addTableBody(newTable, tableRowsHTML);
+        _addTableBody(newTable, dataRows);
         if (footData) {
             _addTableDivision(newTable, `tfoot`, footData);
         } else {
@@ -19,17 +19,26 @@ define([], function() {
     function _addTableDivision(newTable, divisionName, dataArray, dataArray2) {
         let tableDivision = _appendElement(newTable, divisionName);
         let tableRow = _appendElement(tableDivision, `tr`);
-        _addData(tableRow, dataArray);
+        _addData(tableRow, dataArray, `th`);
         if (dataArray2) {
             let tableRow2 = _appendElement(tableDivision, `tr`);
-            _addData(tableRow2, dataArray2);
+            _addData(tableRow2, dataArray2, `th`);
         }
     }
 
-    function _addTableBody(newTable, tableRowsHTML) {
-        let tableBody = _appendElement(newTable, `tbody`);
+    function _addTableBody(newTable, dataRows) {
+        let tableDivision = `tbody`;
+        let tableBody = _appendElement(newTable, tableDivision);
         tableBody.setAttribute(`id`, `tBody`);
-        tableBody.innerHTML = tableRowsHTML;
+        if (typeof dataRows === `string`) {
+            tableBody.innerHTML = dataRows;
+        } else {
+            let tableRow;
+            dataRows.forEach(currentRow => {
+                tableRow = _appendElement(tableDivision, `tr`);
+                _addData(tableRow, currentRow, `td`);
+            })
+        }
     }
 
     function _appendElement(parentElement, elementName) {
@@ -38,33 +47,33 @@ define([], function() {
         return newElement;
     }
 
-    function _addData(rowElement, dataArray) {
+    function _addData(rowElement, dataArray, typeName) {
         dataArray.forEach(dataObject => {
-            let th = document.createElement('th');
+            let colData = document.createElement(typeName);
             if (typeof dataObject === `string`) {
-                th.innerHTML = dataObject;
+                colData.innerHTML = dataObject;
             } else {
                 let { id, align, additionalClass, rowspan, colspan, text } = dataObject;
                 if (id) {
-                    th.setAttribute(`id`, id);
+                    colData.setAttribute(`id`, id);
                 }
                 if (align) {
-                    th.setAttribute(`class`, `text-${align}`);
+                    colData.setAttribute(`class`, `text-${align}`);
                 }
                 if (additionalClass) {
-                    _addToAttribute(th, `class`, additionalClass);
+                    _addToAttribute(colData, `class`, additionalClass);
                 }
                 if (rowspan) {
-                    th.setAttribute(`rowspan`, rowspan);
+                    colData.setAttribute(`rowspan`, rowspan);
                 }
                 if (colspan) {
-                    th.setAttribute(`colspan`, colspan);
+                    colData.setAttribute(`colspan`, colspan);
                 }
                 if (text) {
-                    th.innerHTML = text;
+                    colData.innerHTML = text;
                 }
             }
-            rowElement.appendChild(th);
+            rowElement.appendChild(colData);
         });
     }
 
