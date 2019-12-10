@@ -1,35 +1,35 @@
 define([], function() {
 
-    function createTable(divId, searchId, tableId, headData, dataRows, head2Data, footData) {
+    function createTable(divId, filterId, tableId, headData, dataRows, head2Data, footData) {
         let divElement = document.getElementById(divId);
         divElement.innerHTML = ``;
-        _appendSearchElement(divElement, searchId);
-        _appendTableElement(divElement, searchId, tableId, headData, dataRows, head2Data, footData);
+        _appendfilterElement(divElement, filterId);
+        _appendTableElement(divElement, filterId, tableId, headData, dataRows, head2Data, footData);
     }
 
-    function _appendSearchElement(divElement, searchId) {
-        let searchElement = document.createElement(`input`);
-        searchElement.setAttribute(`type`, `text`);
-        searchElement.setAttribute(`class`, `form-control`);
-        searchElement.setAttribute(`id`, searchId);
-        searchElement.setAttribute(`placeholder`, `Type here to search...`);
-        divElement.appendChild(searchElement);
+    function _appendfilterElement(divElement, filterId) {
+        let filterElement = document.createElement(`input`);
+        filterElement.setAttribute(`type`, `text`);
+        filterElement.setAttribute(`class`, `form-control`);
+        filterElement.setAttribute(`id`, filterId);
+        filterElement.setAttribute(`placeholder`, `Type here to filter...`);
+        divElement.appendChild(filterElement);
     }
 
-    function _appendTableElement(divElement, searchId, tableId, headData, dataRows, head2Data, footData) {
+    function _appendTableElement(divElement, filterId, tableId, headData, dataRows, head2Data, footData) {
         let newTable = document.createElement(`table`);
         newTable.setAttribute(`id`, tableId);
         newTable.setAttribute(`class`, `table table-striped table-bordered table-hover table-sm`);
         divElement.appendChild(newTable);
         _addTableDivision(newTable, `thead`, headData, head2Data);
-        _addTableBody(searchId, newTable, dataRows);
+        _addTableBody(filterId, newTable, dataRows);
         if (footData) {
             _addTableDivision(newTable, `tfoot`, footData);
         } else {
             _addTableDivision(newTable, `tfoot`, headData, head2Data);
         }
-        document.getElementById(searchId).onkeyup = function() {
-            _addTableDataRows(searchId, dataRows);
+        document.getElementById(filterId).onkeyup = function() {
+            _addTableDataRows(filterId, dataRows);
         };
     }
 
@@ -43,23 +43,23 @@ define([], function() {
         }
     }
 
-    function _addTableBody(searchId, newTable, dataRows) {
+    function _addTableBody(filterId, newTable, dataRows) {
         let divisionName = `tbody`;
         let tableDivision = _appendElement(newTable, divisionName);
         tableDivision.setAttribute(`id`, `tBody`);
-        _addTableDataRows(searchId, dataRows);
+        _addTableDataRows(filterId, dataRows);
     }
 
-    function _addTableDataRows(searchId, dataRows) {
+    function _addTableDataRows(filterId, dataRows) {
         let tableDivision = document.getElementById(`tBody`);
         if (typeof dataRows === `string`) {
             tableDivision.innerHTML = dataRows;
         } else {
             tableDivision.innerHTML = ``;
-            let searchTerm = document.getElementById(searchId).value.toLowerCase();
+            let filterTerm = document.getElementById(filterId).value.toLowerCase();
             let tableRow;
             dataRows.forEach(currentRow => {
-                if (_filterData(searchTerm, currentRow)) {
+                if (_filterData(filterTerm, currentRow)) {
                     tableRow = _appendElement(tableDivision, `tr`);
                     _addData(tableRow, currentRow, `td`);
                 }
@@ -73,21 +73,28 @@ define([], function() {
         return newElement;
     }
 
-    function _filterData(searchTerm, dataArray) {
+    function _filterData(filterTerm, dataArray) {
         let isDisplay = false;
+        let isFilter = false;
         dataArray.forEach(dataObject => {
             if (typeof dataObject === `string`) {
-                if (dataObject.toLowerCase().includes(searchTerm)) {
+                if (dataObject.toLowerCase().includes(filterTerm)) {
                     isDisplay = true;
                 }
             } else {
-                let { id, align, additionalClass, rowspan, colspan, text } = dataObject;
-                if (typeof text !== `string` || text.toLowerCase().includes(searchTerm)) {
-                    isDisplay = true;
+                let { filterText } = dataObject;
+                if (filterText) {
+                    isFilter = true;
+                    if (filterText.toLowerCase().includes(filterTerm)) {
+                        isDisplay = true;
+                    }
                 }
             }
         });
-        return isDisplay;
+        if (isFilter) {
+            return isDisplay;
+        }
+        return true;
     }
 
     function _addData(rowElement, dataArray, typeName) {
