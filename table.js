@@ -1,19 +1,36 @@
 define([], function() {
 
-    function createTable(divId, tableId, headData, dataRows, head2Data, footData) {
+    function createTable(divId, searchId, tableId, headData, dataRows, head2Data, footData) {
+        let divElement = document.getElementById(divId);
+        divElement.innerHTML = ``;
+        _appendSearchElement(divElement, searchId);
+        _appendTableElement(divElement, searchId, tableId, headData, dataRows, head2Data, footData);
+    }
+
+    function _appendSearchElement(divElement, searchId) {
+        let searchElement = document.createElement(`input`);
+        searchElement.setAttribute(`type`, `text`);
+        searchElement.setAttribute(`class`, `form-control`);
+        searchElement.setAttribute(`id`, searchId);
+        searchElement.setAttribute(`placeholder`, `Type here to search...`);
+        divElement.appendChild(searchElement);
+    }
+
+    function _appendTableElement(divElement, searchId, tableId, headData, dataRows, head2Data, footData) {
         let newTable = document.createElement(`table`);
         newTable.setAttribute(`id`, tableId);
         newTable.setAttribute(`class`, `table table-striped table-bordered table-hover table-sm`);
-        let divElement = document.getElementById(divId);
-        divElement.innerHTML = ``;
         divElement.appendChild(newTable);
         _addTableDivision(newTable, `thead`, headData, head2Data);
-        _addTableBody(newTable, dataRows);
+        _addTableBody(searchId, newTable, dataRows);
         if (footData) {
             _addTableDivision(newTable, `tfoot`, footData);
         } else {
             _addTableDivision(newTable, `tfoot`, headData, head2Data);
         }
+        document.getElementById(searchId).onkeyup = function() {
+            _addTableDataRows(searchId, dataRows);
+        };
     }
 
     function _addTableDivision(newTable, divisionName, dataArray, dataArray2) {
@@ -26,17 +43,26 @@ define([], function() {
         }
     }
 
-    function _addTableBody(newTable, dataRows) {
-        let tableDivision = `tbody`;
-        let tableBody = _appendElement(newTable, tableDivision);
-        tableBody.setAttribute(`id`, `tBody`);
+    function _addTableBody(searchId, newTable, dataRows) {
+        let divisionName = `tbody`;
+        let tableDivision = _appendElement(newTable, divisionName);
+        tableDivision.setAttribute(`id`, `tBody`);
+        _addTableDataRows(searchId, dataRows);
+    }
+
+    function _addTableDataRows(searchId, dataRows) {
+        let tableDivision = document.getElementById(`tBody`);
         if (typeof dataRows === `string`) {
-            tableBody.innerHTML = dataRows;
+            tableDivision.innerHTML = dataRows;
         } else {
+            tableDivision.innerHTML = ``;
+            let searchTerm = document.getElementById(searchId).value.toLowerCase();
             let tableRow;
             dataRows.forEach(currentRow => {
-                tableRow = _appendElement(tableDivision, `tr`);
-                _addData(tableRow, currentRow, `td`);
+                if (_filterData(searchTerm, currentRow)) {
+                    tableRow = _appendElement(tableDivision, `tr`);
+                    _addData(tableRow, currentRow, `td`);
+                }
             })
         }
     }
@@ -47,9 +73,27 @@ define([], function() {
         return newElement;
     }
 
-    function _addData(rowElement, dataArray, typeName) {
+    function _filterData(searchTerm, dataArray) {
+        let isDisplay = false;
         dataArray.forEach(dataObject => {
-            let colData = document.createElement(typeName);
+            if (typeof dataObject === `string`) {
+                if (dataObject.toLowerCase().includes(searchTerm)) {
+                    isDisplay = true;
+                }
+            } else {
+                let { id, align, additionalClass, rowspan, colspan, text } = dataObject;
+                if (typeof text !== `string` || text.toLowerCase().includes(searchTerm)) {
+                    isDisplay = true;
+                }
+            }
+        });
+        return isDisplay;
+    }
+
+    function _addData(rowElement, dataArray, typeName) {
+        let colData;
+        dataArray.forEach(dataObject => {
+            colData = document.createElement(typeName);
             if (typeof dataObject === `string`) {
                 colData.innerHTML = dataObject;
             } else {
