@@ -15,3 +15,4 @@ additionalClass
 rowspan
 colspan
 text
+filterText
