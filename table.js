@@ -1,76 +1,84 @@
 define([], function() {
 
-    function createTable(divId, filterId, tableId, headData, dataRows, head2Data, footData) {
-        let divElement = document.getElementById(divId);
-        divElement.innerHTML = ``;
-        _appendfilterElement(divElement, filterId);
-        _appendTableElement(divElement, filterId, tableId, headData, dataRows, head2Data, footData);
-    }
+    function createTable(paramObject) {
+        let { divId, tableId, headData, dataRows, head2Data, footData } = paramObject;
+        let divNode = document.getElementById(divId);
+        _clearNode(divNode);
+        let filterNode = _getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to filter...` });
+        divNode.appendChild(filterNode);
+        let tableNode = _getNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
+        divNode.appendChild(tableNode);
 
-    function _appendfilterElement(divElement, filterId) {
-        let filterElement = document.createElement(`input`);
-        filterElement.setAttribute(`type`, `text`);
-        filterElement.setAttribute(`class`, `form-control`);
-        filterElement.setAttribute(`id`, filterId);
-        filterElement.setAttribute(`placeholder`, `Type here to filter...`);
-        divElement.appendChild(filterElement);
-    }
+        _addTableDivision(tableNode, `thead`, headData, head2Data);
 
-    function _appendTableElement(divElement, filterId, tableId, headData, dataRows, head2Data, footData) {
-        let newTable = document.createElement(`table`);
-        newTable.setAttribute(`id`, tableId);
-        newTable.setAttribute(`class`, `table table-striped table-bordered table-hover table-sm`);
-        divElement.appendChild(newTable);
-        _addTableDivision(newTable, `thead`, headData, head2Data);
-        _addTableBody(filterId, newTable, dataRows);
-        if (footData) {
-            _addTableDivision(newTable, `tfoot`, footData);
-        } else {
-            _addTableDivision(newTable, `tfoot`, headData, head2Data);
-        }
-        document.getElementById(filterId).onkeyup = function() {
-            _addTableDataRows(filterId, dataRows);
+        let bodyNode = _getNode(`tbody`, { id: `tBody` });
+        tableNode.appendChild(bodyNode);
+        _addTableDataRows(filterNode, bodyNode, dataRows);
+        filterNode.onkeyup = function() {
+            _addTableDataRows(filterNode, bodyNode, dataRows);
         };
-    }
 
-    function _addTableDivision(newTable, divisionName, dataArray, dataArray2) {
-        let tableDivision = _appendElement(newTable, divisionName);
-        let tableRow = _appendElement(tableDivision, `tr`);
-        _addData(tableRow, dataArray, `th`);
-        if (dataArray2) {
-            let tableRow2 = _appendElement(tableDivision, `tr`);
-            _addData(tableRow2, dataArray2, `th`);
+        if (footData) {
+            _addTableDivision(tableNode, `tfoot`, footData);
+        } else {
+            _addTableDivision(tableNode, `tfoot`, headData, head2Data);
         }
     }
 
-    function _addTableBody(filterId, newTable, dataRows) {
-        let divisionName = `tbody`;
-        let tableDivision = _appendElement(newTable, divisionName);
-        tableDivision.setAttribute(`id`, `tBody`);
-        _addTableDataRows(filterId, dataRows);
+    function _clearNode(node) {
+        while (node.firstChild) {
+            node.removeChild(node.firstChild);
+        }
     }
 
-    function _addTableDataRows(filterId, dataRows) {
-        let tableDivision = document.getElementById(`tBody`);
+    function _getNode(nodeType, paramObject) {
+        let newNode = document.createElement(nodeType);
+        if (paramObject) {
+            let { className, id, placeholder, type } = paramObject;
+            if (className) {
+                newNode.setAttribute(`class`, className);
+            }
+            if (id) {
+                newNode.setAttribute(`id`, id);
+            }
+            if (placeholder) {
+                newNode.setAttribute(`placeholder`, placeholder);
+            }
+            if (type) {
+                newNode.setAttribute(`type`, type);
+            }
+        }
+        return newNode;
+    }
+
+    function _addTableDivision(tableNode, divisionName, dataArray, dataArray2) {
+        let divisionNode = _getNode(divisionName);
+        tableNode.appendChild(divisionNode);
+        let rowNode = _getNode(`tr`);
+        divisionNode.appendChild(rowNode);
+        _addData(rowNode, dataArray, `th`);
+        if (dataArray2) {
+            rowNode = _getNode(`tr`);
+            divisionNode.appendChild(rowNode);
+            _addData(rowNode, dataArray2, `th`);
+        }
+    }
+
+    function _addTableDataRows(filterNode, bodyNode, dataRows) {
+        _clearNode(bodyNode);
         if (typeof dataRows === `string`) {
-            tableDivision.innerHTML = dataRows;
+            bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
         } else {
-            tableDivision.innerHTML = ``;
-            let filterTerm = document.getElementById(filterId).value.toLowerCase();
-            let tableRow;
+            let filterTerm = filterNode.value.toLowerCase();
+            let rowNode;
             dataRows.forEach(currentRow => {
                 if (_filterData(filterTerm, currentRow)) {
-                    tableRow = _appendElement(tableDivision, `tr`);
-                    _addData(tableRow, currentRow, `td`);
+                    rowNode = _getNode(`tr`);
+                    bodyNode.appendChild(rowNode);
+                    _addData(rowNode, currentRow, `td`);
                 }
             })
         }
-    }
-
-    function _appendElement(parentElement, elementName) {
-        let newElement = document.createElement(elementName);
-        parentElement.appendChild(newElement);
-        return newElement;
     }
 
     function _filterData(filterTerm, dataArray) {
@@ -97,34 +105,34 @@ define([], function() {
         return true;
     }
 
-    function _addData(rowElement, dataArray, typeName) {
-        let colData;
+    function _addData(rowNode, dataArray, typeName) {
+        let colNode;
         dataArray.forEach(dataObject => {
-            colData = document.createElement(typeName);
+            colNode = document.createElement(typeName);
             if (typeof dataObject === `string`) {
-                colData.innerHTML = dataObject;
+                colNode.insertAdjacentHTML(`beforeend`, dataObject);
             } else {
                 let { id, align, additionalClass, rowspan, colspan, text } = dataObject;
                 if (id) {
-                    colData.setAttribute(`id`, id);
+                    colNode.setAttribute(`id`, id);
                 }
                 if (align) {
-                    colData.setAttribute(`class`, `text-${align}`);
+                    colNode.setAttribute(`class`, `text-${align}`);
                 }
                 if (additionalClass) {
-                    _addToAttribute(colData, `class`, additionalClass);
+                    _addToAttribute(colNode, `class`, additionalClass);
                 }
                 if (rowspan) {
-                    colData.setAttribute(`rowspan`, rowspan);
+                    colNode.setAttribute(`rowspan`, rowspan);
                 }
                 if (colspan) {
-                    colData.setAttribute(`colspan`, colspan);
+                    colNode.setAttribute(`colspan`, colspan);
                 }
                 if (text) {
-                    colData.innerHTML = text;
+                    colNode.insertAdjacentHTML(`beforeend`, text);
                 }
             }
-            rowElement.appendChild(colData);
+            rowNode.appendChild(colNode);
         });
     }
 
