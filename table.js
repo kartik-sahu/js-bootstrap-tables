@@ -1,7 +1,7 @@
 define([], function() {
 
     function createTable(paramObject) {
-        let { divId, tableId, headData, dataRows, head2Data, footData } = paramObject;
+        let { divId, tableId, headData, dataRows, head2Data, footData, functionArray } = paramObject;
         let divNode = document.getElementById(divId);
         _clearNode(divNode);
         let filterNode = _getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to filter...` });
@@ -13,9 +13,9 @@ define([], function() {
 
         let bodyNode = _getNode(`tbody`, { id: `tBody` });
         tableNode.appendChild(bodyNode);
-        _addTableDataRows(filterNode, bodyNode, dataRows);
+        _addTableDataRows(filterNode, bodyNode, dataRows, functionArray);
         filterNode.onkeyup = function() {
-            _addTableDataRows(filterNode, bodyNode, dataRows);
+            _addTableDataRows(filterNode, bodyNode, dataRows, functionArray);
         };
 
         if (footData) {
@@ -64,7 +64,7 @@ define([], function() {
         }
     }
 
-    function _addTableDataRows(filterNode, bodyNode, dataRows) {
+    function _addTableDataRows(filterNode, bodyNode, dataRows, functionArray) {
         _clearNode(bodyNode);
         if (typeof dataRows === `string`) {
             bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
@@ -79,6 +79,20 @@ define([], function() {
                 }
             })
         }
+        if (functionArray) {
+            functionArray.forEach(currentObject => {
+                let { className, eventName, functionName } = currentObject;
+                _attachFunctionToClassNodes(className, eventName, functionName);
+            });
+        }
+    }
+
+    function _attachFunctionToClassNodes(className, eventName, functionName) {
+        let classNodes = document.getElementsByClassName(className);
+        Array.from(classNodes).forEach(element => {
+            element.removeEventListener(eventName, functionName);
+            element.addEventListener(eventName, functionName);
+        });
     }
 
     function _filterData(filterTerm, dataArray) {
