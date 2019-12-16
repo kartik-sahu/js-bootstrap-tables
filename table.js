@@ -8,14 +8,16 @@ define([], function() {
         divNode.appendChild(filterNode);
         let tableNode = _getNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
         divNode.appendChild(tableNode);
+        let countNode = _getNode(`div`);
+        divNode.appendChild(countNode);
 
         _addTableDivision(tableNode, `thead`, headData, head2Data);
 
         let bodyNode = _getNode(`tbody`, { id: `tBody` });
         tableNode.appendChild(bodyNode);
-        _addTableDataRows(filterNode, bodyNode, dataRows, functionArray);
+        _addTableDataRows(filterNode, bodyNode, countNode, dataRows, functionArray);
         filterNode.onkeyup = function() {
-            _addTableDataRows(filterNode, bodyNode, dataRows, functionArray);
+            _addTableDataRows(filterNode, bodyNode, countNode, dataRows, functionArray);
         };
 
         if (footData) {
@@ -23,6 +25,7 @@ define([], function() {
         } else {
             _addTableDivision(tableNode, `tfoot`, headData, head2Data);
         }
+
     }
 
     function _clearNode(node) {
@@ -34,15 +37,30 @@ define([], function() {
     function _getNode(nodeType, paramObject) {
         let newNode = document.createElement(nodeType);
         if (paramObject) {
-            let { className, id, placeholder, type } = paramObject;
+            let { additionalClass, align, className, colspan, id, placeholder, rowspan, text, type } = paramObject;
+            if (align) {
+                newNode.setAttribute(`class`, `text-${align}`);
+            }
             if (className) {
                 newNode.setAttribute(`class`, className);
+            }
+            if (additionalClass) {
+                _addToAttribute(newNode, `class`, additionalClass);
+            }
+            if (colspan) {
+                newNode.setAttribute(`colspan`, colspan);
             }
             if (id) {
                 newNode.setAttribute(`id`, id);
             }
             if (placeholder) {
                 newNode.setAttribute(`placeholder`, placeholder);
+            }
+            if (rowspan) {
+                newNode.setAttribute(`rowspan`, rowspan);
+            }
+            if (text) {
+                newNode.insertAdjacentHTML(`beforeend`, text);
             }
             if (type) {
                 newNode.setAttribute(`type`, type);
@@ -56,28 +74,32 @@ define([], function() {
         tableNode.appendChild(divisionNode);
         let rowNode = _getNode(`tr`);
         divisionNode.appendChild(rowNode);
-        _addData(rowNode, dataArray, `th`);
+        _addData(rowNode, `S.No.`, dataArray, `th`);
         if (dataArray2) {
             rowNode = _getNode(`tr`);
             divisionNode.appendChild(rowNode);
-            _addData(rowNode, dataArray2, `th`);
+            _addData(rowNode, `S.No.`, dataArray2, `th`);
         }
     }
 
-    function _addTableDataRows(filterNode, bodyNode, dataRows, functionArray) {
+    function _addTableDataRows(filterNode, bodyNode, countNode, dataRows, functionArray) {
         _clearNode(bodyNode);
         if (typeof dataRows === `string`) {
             bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
         } else {
             let filterTerm = filterNode.value.toLowerCase();
+            let serialNumber = 0;
             let rowNode;
             dataRows.forEach(currentRow => {
                 if (_filterData(filterTerm, currentRow)) {
+                    serialNumber++;
                     rowNode = _getNode(`tr`);
                     bodyNode.appendChild(rowNode);
-                    _addData(rowNode, currentRow, `td`);
+                    _addData(rowNode, serialNumber, currentRow, `td`);
                 }
             })
+            _clearNode(countNode);
+            countNode.insertAdjacentText(`beforeend`, `Showing 1 to ${serialNumber} of ${serialNumber} entries`);
         }
         if (functionArray) {
             functionArray.forEach(currentObject => {
@@ -119,35 +141,19 @@ define([], function() {
         return true;
     }
 
-    function _addData(rowNode, dataArray, typeName) {
+    function _addData(rowNode, serialNumber, dataArray, typeName) {
         let colNode;
         dataArray.forEach(dataObject => {
-            colNode = document.createElement(typeName);
             if (typeof dataObject === `string`) {
+                colNode = document.createElement(typeName);
                 colNode.insertAdjacentHTML(`beforeend`, dataObject);
             } else {
-                let { id, align, additionalClass, rowspan, colspan, text } = dataObject;
-                if (id) {
-                    colNode.setAttribute(`id`, id);
-                }
-                if (align) {
-                    colNode.setAttribute(`class`, `text-${align}`);
-                }
-                if (additionalClass) {
-                    _addToAttribute(colNode, `class`, additionalClass);
-                }
-                if (rowspan) {
-                    colNode.setAttribute(`rowspan`, rowspan);
-                }
-                if (colspan) {
-                    colNode.setAttribute(`colspan`, colspan);
-                }
-                if (text) {
-                    colNode.insertAdjacentHTML(`beforeend`, text);
-                }
+                colNode = _getNode(typeName, dataObject);
             }
             rowNode.appendChild(colNode);
         });
+        let serialNumberNode = _getNode(typeName, { text: serialNumber });
+        rowNode.insertBefore(serialNumberNode, rowNode.firstChild);
     }
 
     function _addToAttribute(currentElement, name, newText) {
