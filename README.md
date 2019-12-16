@@ -1,14 +1,14 @@
 # js-bootstrap-tables
 Bootstrap tables using vanilla javascript
 
-Requirements
-Require-js (optional)
-Bootstrap (optional)
+# Optional Requirements
+Require-js
+Bootstrap
 
-How to use
+# How to use
 createTable(divId, tableId, headData, dataRows, head2Data, footData);
 
-Properties
+# Properties
 id
 align
 additionalClass
