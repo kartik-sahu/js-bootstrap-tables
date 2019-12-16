@@ -132,10 +132,10 @@ define([], function() {
     }
 
     function _addData(rowNode, serialNumber, dataArray, typeName) {
-        let colNode;
+        let cellNode;
         dataArray.forEach(dataObject => {
-            colNode = _getNode(typeName, dataObject);
-            rowNode.appendChild(colNode);
+            cellNode = _getNode(typeName, dataObject);
+            rowNode.appendChild(cellNode);
         });
         let serialNumberNode = _getNode(typeName, { text: serialNumber });
         rowNode.insertBefore(serialNumberNode, rowNode.firstChild);
