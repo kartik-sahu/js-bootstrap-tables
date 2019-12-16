@@ -6,7 +6,13 @@ Require-js
 Bootstrap
 
 # How to use
-createTable({ divId: `tableDiv`, tableId: `tableData`, headData, dataRows, head2Data, footData, functionArray });
+let headRow = [{ text: `Name` }];
+let dataRows = [
+{text: `Pankaj`},
+{text: `Ram`},
+{text: `Tarun`}
+];
+createTable({ divId: `tableDiv`, tableId: `tableData`, headRow, dataRows, head2Row, footRow, functionArray });
 
 # Properties
 id
