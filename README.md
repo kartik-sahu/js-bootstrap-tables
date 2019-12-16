@@ -1,5 +1,5 @@
 # js-bootstrap-tables
-Bootstrap tables using vanilla javascript
+Bootstrap tables using vanilla javascript with built-in search, serial no., event-firing, colspan, rowspan, counters and much more...
 
 # Optional Requirements
 Require-js
