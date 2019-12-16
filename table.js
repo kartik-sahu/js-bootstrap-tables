@@ -84,23 +84,19 @@ define([], function() {
 
     function _addTableDataRows(filterNode, bodyNode, countNode, dataRows, functionArray) {
         _clearNode(bodyNode);
-        if (typeof dataRows === `string`) {
-            bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
-        } else {
-            let filterTerm = filterNode.value.toLowerCase();
-            let serialNumber = 0;
-            let rowNode;
-            dataRows.forEach(currentRow => {
-                if (_filterData(filterTerm, currentRow)) {
-                    serialNumber++;
-                    rowNode = _getNode(`tr`);
-                    bodyNode.appendChild(rowNode);
-                    _addData(rowNode, serialNumber, currentRow, `td`);
-                }
-            })
-            _clearNode(countNode);
-            countNode.insertAdjacentText(`beforeend`, `Showing 1 to ${serialNumber} of ${serialNumber} entries`);
-        }
+        let filterTerm = filterNode.value.toLowerCase();
+        let serialNumber = 0;
+        let rowNode;
+        dataRows.forEach(currentRow => {
+            if (_filterData(filterTerm, currentRow)) {
+                serialNumber++;
+                rowNode = _getNode(`tr`);
+                bodyNode.appendChild(rowNode);
+                _addData(rowNode, serialNumber, currentRow, `td`);
+            }
+        })
+        _clearNode(countNode);
+        countNode.insertAdjacentText(`beforeend`, `Showing 1 to ${serialNumber} of ${serialNumber} entries`);
         if (functionArray) {
             functionArray.forEach(currentObject => {
                 let { className, eventName, functionName } = currentObject;
@@ -121,17 +117,11 @@ define([], function() {
         let isDisplay = false;
         let isFilter = false;
         dataArray.forEach(dataObject => {
-            if (typeof dataObject === `string`) {
-                if (dataObject.toLowerCase().includes(filterTerm)) {
+            let { filterText } = dataObject;
+            if (filterText) {
+                isFilter = true;
+                if (filterText.toLowerCase().includes(filterTerm)) {
                     isDisplay = true;
-                }
-            } else {
-                let { filterText } = dataObject;
-                if (filterText) {
-                    isFilter = true;
-                    if (filterText.toLowerCase().includes(filterTerm)) {
-                        isDisplay = true;
-                    }
                 }
             }
         });
@@ -144,12 +134,7 @@ define([], function() {
     function _addData(rowNode, serialNumber, dataArray, typeName) {
         let colNode;
         dataArray.forEach(dataObject => {
-            if (typeof dataObject === `string`) {
-                colNode = document.createElement(typeName);
-                colNode.insertAdjacentHTML(`beforeend`, dataObject);
-            } else {
-                colNode = _getNode(typeName, dataObject);
-            }
+            colNode = _getNode(typeName, dataObject);
             rowNode.appendChild(colNode);
         });
         let serialNumberNode = _getNode(typeName, { text: serialNumber });
