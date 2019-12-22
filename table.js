@@ -1,31 +1,34 @@
 define([], function() {
 
     function createTable(paramObject) {
-        let { divId, tableId, headData, dataRows, head2Data, footData, functionArray } = paramObject;
+        let { divId, tableId, headData, dataRows, head2Data, footData, functionArray, addFilter } = paramObject;
         let divNode = document.getElementById(divId);
         _clearNode(divNode);
-        let filterNode = _getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to filter...` });
-        divNode.appendChild(filterNode);
+        let filterNode;
+        if (addFilter) {
+            filterNode = _getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to filter...` });
+            divNode.appendChild(filterNode);
+        }
         let tableNode = _getNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
         divNode.appendChild(tableNode);
         let countNode = _getNode(`div`);
         divNode.appendChild(countNode);
-
         _addTableDivision(tableNode, `thead`, headData, head2Data);
-
         let bodyNode = _getNode(`tbody`, { id: `tBody` });
         tableNode.appendChild(bodyNode);
-        _addTableDataRows(filterNode, bodyNode, countNode, dataRows, functionArray);
-        filterNode.onkeyup = function() {
-            _addTableDataRows(filterNode, bodyNode, countNode, dataRows, functionArray);
-        };
-
+        if (addFilter) {
+            _addTableDataRows({ filterNode, bodyNode, countNode, dataRows, functionArray });
+            filterNode.onkeyup = function() {
+                _addTableDataRows({ filterNode, bodyNode, countNode, dataRows, functionArray });
+            };
+        } else {
+            _addTableDataRows({ bodyNode, countNode, dataRows, functionArray });
+        }
         if (footData) {
             _addTableDivision(tableNode, `tfoot`, footData);
         } else {
             _addTableDivision(tableNode, `tfoot`, headData, head2Data);
         }
-
     }
 
     function _clearNode(node) {
@@ -75,28 +78,36 @@ define([], function() {
         let rowNode = _getNode(`tr`);
         divisionNode.appendChild(rowNode);
         _addData(rowNode, `S.No.`, dataArray, `th`);
-        if (dataArray2) {
+        if (dataArray2 && dataArray2.length) {
             rowNode = _getNode(`tr`);
             divisionNode.appendChild(rowNode);
             _addData(rowNode, `S.No.`, dataArray2, `th`);
         }
     }
 
-    function _addTableDataRows(filterNode, bodyNode, countNode, dataRows, functionArray) {
+    function _addTableDataRows(paramObjectTDR) {
+        let { filterNode, bodyNode, countNode, dataRows, functionArray } = paramObjectTDR;
         _clearNode(bodyNode);
-        let filterTerm = filterNode.value.toLowerCase();
-        let serialNumber = 0;
-        let rowNode;
-        dataRows.forEach(currentRow => {
-            if (_filterData(filterTerm, currentRow)) {
-                serialNumber++;
-                rowNode = _getNode(`tr`);
-                bodyNode.appendChild(rowNode);
-                _addData(rowNode, serialNumber, currentRow, `td`);
+        if (typeof dataRows === `string`) {
+            bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
+        } else {
+            let filterTerm;
+            if (filterNode) {
+                filterTerm = filterNode.value.toLowerCase();
             }
-        })
-        _clearNode(countNode);
-        countNode.insertAdjacentText(`beforeend`, `Showing 1 to ${serialNumber} of ${serialNumber} entries`);
+            let serialNumber = 0;
+            let rowNode;
+            dataRows.forEach(currentRow => {
+                if (!filterNode || _filterData(filterTerm, currentRow)) {
+                    serialNumber++;
+                    rowNode = _getNode(`tr`);
+                    bodyNode.appendChild(rowNode);
+                    _addData(rowNode, serialNumber, currentRow, `td`);
+                }
+            })
+            _clearNode(countNode);
+            countNode.insertAdjacentText(`beforeend`, `Showing 1 to ${serialNumber} of ${serialNumber} entries`);
+        }
         if (functionArray) {
             functionArray.forEach(currentObject => {
                 let { className, eventName, functionName } = currentObject;
