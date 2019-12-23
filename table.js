@@ -9,6 +9,7 @@ define([], function() {
             filterNode = _getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to filter...` });
             divNode.appendChild(filterNode);
         }
+        let limitNode = _addLimitNode(paramObject, divNode);
         let tableNode = _getNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
         divNode.appendChild(tableNode);
         let countNode = _getNode(`div`);
@@ -17,18 +18,40 @@ define([], function() {
         let bodyNode = _getNode(`tbody`, { id: `tBody` });
         tableNode.appendChild(bodyNode);
         if (addFilter) {
-            _addTableDataRows({ filterNode, bodyNode, countNode, dataRows, functionArray });
+            _addTableDataRows({ paramObject, filterNode, limitNode, bodyNode, countNode });
             filterNode.onkeyup = function() {
-                _addTableDataRows({ filterNode, bodyNode, countNode, dataRows, functionArray });
+                _addTableDataRows({ paramObject, filterNode, limitNode, bodyNode, countNode });
             };
         } else {
-            _addTableDataRows({ bodyNode, countNode, dataRows, functionArray });
+            _addTableDataRows({ paramObject, limitNode, bodyNode, countNode });
         }
         if (footData) {
             _addTableDivision(tableNode, `tfoot`, footData);
         } else {
             _addTableDivision(tableNode, `tfoot`, headData, head2Data);
         }
+    }
+
+    function _addLimitNode(paramObject, divNode) {
+        let { addLimit } = paramObject;
+        if (addLimit) {
+            let rowNode = _getNode(`div`, { className: `row` });
+            divNode.appendChild(rowNode);
+            let colNode = _getNode(`div`, { className: `col-2` });
+            rowNode.appendChild(colNode);
+            colNode.insertAdjacentText(`beforeend`, `Show`);
+            let limitNode = _getNode(`select`, { className: `form-control` });
+            colNode.appendChild(limitNode);
+            colNode.insertAdjacentText(`beforeend`, `entries`);
+            let limitOption = _getNode(`option`, { value: 100 });
+            limitOption.insertAdjacentText(`beforeend`, 100);
+            limitNode.appendChild(limitOption);
+            limitOption = _getNode(`option`, { value: `All` });
+            limitOption.insertAdjacentText(`beforeend`, `All`);
+            limitNode.appendChild(limitOption);
+            return limitNode;
+        }
+        return false;
     }
 
     function _clearNode(node) {
@@ -40,7 +63,7 @@ define([], function() {
     function _getNode(nodeType, paramObject) {
         let newNode = document.createElement(nodeType);
         if (paramObject) {
-            let { additionalClass, align, className, colspan, id, placeholder, rowspan, text, type } = paramObject;
+            let { additionalClass, align, className, colspan, id, placeholder, rowspan, text, type, value } = paramObject;
             if (align) {
                 newNode.setAttribute(`class`, `text-${align}`);
             }
@@ -68,6 +91,9 @@ define([], function() {
             if (type) {
                 newNode.setAttribute(`type`, type);
             }
+            if (value) {
+                newNode.setAttribute(`value`, value);
+            }
         }
         return newNode;
     }
@@ -86,7 +112,8 @@ define([], function() {
     }
 
     function _addTableDataRows(paramObjectTDR) {
-        let { filterNode, bodyNode, countNode, dataRows, functionArray } = paramObjectTDR;
+        let { filterNode, limitNode, bodyNode, countNode, paramObject } = paramObjectTDR;
+        let { dataRows, functionArray } = paramObject;
         _clearNode(bodyNode);
         if (typeof dataRows === `string`) {
             bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
@@ -96,17 +123,21 @@ define([], function() {
                 filterTerm = filterNode.value.toLowerCase();
             }
             let serialNumber = 0;
+            let limitNumber = 0;
             let rowNode;
             dataRows.forEach(currentRow => {
                 if (!filterNode || _filterData(filterTerm, currentRow)) {
                     serialNumber++;
-                    rowNode = _getNode(`tr`);
-                    bodyNode.appendChild(rowNode);
-                    _addData(rowNode, serialNumber, currentRow, `td`);
+                    if (!limitNode || limitNode.value >= serialNumber) {
+                        limitNumber++;
+                        rowNode = _getNode(`tr`);
+                        bodyNode.appendChild(rowNode);
+                        _addData(rowNode, serialNumber, currentRow, `td`);
+                    }
                 }
-            })
+            });
             _clearNode(countNode);
-            countNode.insertAdjacentText(`beforeend`, `Showing 1 to ${serialNumber} of ${serialNumber} entries`);
+            countNode.insertAdjacentText(`beforeend`, `Showing 1 to ${limitNumber} of ${serialNumber} entries`);
         }
         if (functionArray) {
             functionArray.forEach(currentObject => {
