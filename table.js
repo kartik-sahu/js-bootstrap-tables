@@ -9,11 +9,16 @@ define([], function() {
             filterNode = _getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to search...` });
             divNode.appendChild(filterNode);
         }
-        let limitNode = _addLimitNode(paramObject, divNode);
+        let limitRow = _getNode(`div`, { className: `row` });
+        let limitCol = _getNode(`div`, { className: `col` });
+        limitRow.appendChild(limitCol);
+        let limitNode = _addLimitNode(paramObject, limitCol);
+        limitCol = _getNode(`div`, { className: `col text-right` });
+        limitRow.appendChild(limitCol);
+        let countNode = _getNode(`div`);
+        limitCol.appendChild(countNode);
         let tableNode = _getNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
         divNode.appendChild(tableNode);
-        let countNode = _getNode(`div`);
-        divNode.appendChild(countNode);
         _addTableDivision(tableNode, `thead`, headData, head2Data);
         let bodyNode = _getNode(`tbody`, { id: `tBody` });
         tableNode.appendChild(bodyNode);
