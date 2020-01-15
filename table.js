@@ -10,6 +10,7 @@ define([], function() {
             divNode.appendChild(filterNode);
         }
         let limitRow = _getNode(`div`, { className: `row` });
+        divNode.appendChild(limitRow);
         let limitCol = _getNode(`div`, { className: `col` });
         limitRow.appendChild(limitCol);
         let limitNode = _addLimitNode(paramObject, limitCol);
