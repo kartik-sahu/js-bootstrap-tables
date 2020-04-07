@@ -119,7 +119,6 @@ function getTR(paramObject) {
 }
 
 function _getNode(type, paramObject) {
-    console.log({ type, paramObject });
     let node = document.createElement(type);
     if (paramObject) {
         let {
