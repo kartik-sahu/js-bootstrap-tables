@@ -4,9 +4,11 @@ Bootstrap tables using vanilla javascript with built-in search, serial no., even
 
 # Optional Requirements
 
-Require-js
-
 Bootstrap
+
+# CDN
+
+<script src="https://cdn.jsdelivr.net/gh/thehitechpanky/js-bootstrap-tables@master/table.js"></script>
 
 # How to use
 
