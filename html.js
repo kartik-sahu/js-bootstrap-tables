@@ -119,6 +119,7 @@ function getTR(paramObject) {
 }
 
 function _getNode(type, paramObject) {
+    console.log({ type, paramObject });
     let node = document.createElement(type);
     if (paramObject) {
         let {
@@ -256,7 +257,6 @@ function _getNode(type, paramObject) {
         if (value || value === 0) {
             node.setAttribute(`value`, value);
         }
-        console.log({ type, value });
         if (width) {
             node.setAttribute(`width`, width);
         }
