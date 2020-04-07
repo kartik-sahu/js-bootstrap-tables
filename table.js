@@ -79,7 +79,7 @@ function _clearNode(node) {
 function _getNode(nodeType, paramObject) {
     let newNode = document.createElement(nodeType);
     if (paramObject) {
-        let { additionalClass, align, className, colspan, id, placeholder, rowspan, text, type, value } = paramObject;
+        let { additionalClass, align, className, colspan, id, placeholder, rowspan, text, textUrl, type, value } = paramObject;
         if (align) {
             newNode.setAttribute(`class`, `text-${align}`);
         }
@@ -101,7 +101,12 @@ function _getNode(nodeType, paramObject) {
         if (rowspan) {
             newNode.setAttribute(`rowspan`, rowspan);
         }
-        if (text) {
+        if (text && textUrl) {
+            let aNode = document.createElement(`a`);
+            newNode.appendChild(aNode);
+            aNode.setAttribute(`href`, textUrl);
+            aNode.insertAdjacentHTML(`beforeend`, text);
+        } else if (text) {
             newNode.insertAdjacentHTML(`beforeend`, text);
         }
         if (type) {
