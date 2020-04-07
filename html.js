@@ -1,0 +1,264 @@
+function getA(paramObject) {
+    return _getNode(`a`, paramObject);
+}
+
+function getBody(paramObject) {
+    return _getNode(`body`, paramObject);
+}
+
+function getBr(paramObject) {
+    return _getNode(`br`, paramObject);
+}
+
+function getButton(paramObject) {
+    return _getNode(`button`, paramObject);
+}
+
+function getCanvas(paramObject) {
+    return _getNode(`canvas`, paramObject);
+}
+
+function getDiv(paramObject) {
+    return _getNode(`div`, paramObject);
+}
+
+function getFooter(paramObject) {
+    return _getNode(`footer`, paramObject);
+}
+
+function getForm(paramObject) {
+    return _getNode(`form`, paramObject);
+}
+
+function getH1(paramObject) {
+    return _getNode(`h1`, paramObject);
+}
+
+function getH2(paramObject) {
+    return _getNode(`h2`, paramObject);
+}
+
+function getH3(paramObject) {
+    return _getNode(`h3`, paramObject);
+}
+
+function getH4(paramObject) {
+    return _getNode(`h4`, paramObject);
+}
+
+function getH5(paramObject) {
+    return _getNode(`h5`, paramObject);
+}
+
+function getHead(paramObject) {
+    return _getNode(`head`, paramObject);
+}
+
+function getHTML(paramObject) {
+    return _getNode(`html`, paramObject);
+}
+
+function getI(paramObject) {
+    return _getNode(`i`, paramObject);
+}
+
+function getImg(paramObject) {
+    return _getNode(`img`, paramObject);
+}
+
+function getInput(paramObject) {
+    return _getNode(`input`, paramObject);
+}
+
+function getLabel(paramObject) {
+    return _getNode(`label`, paramObject);
+}
+
+function getLink(paramObject) {
+    return _getNode(`link`, paramObject);
+}
+
+function getOption(paramObject) {
+    return _getNode(`option`, paramObject);
+}
+
+function getSelect(paramObject) {
+    return _getNode(`select`, paramObject);
+}
+
+function getSmall(paramObject) {
+    return _getNode(`small`, paramObject);
+}
+
+function getSpan(paramObject) {
+    return _getNode(`span`, paramObject);
+}
+
+function getStrong(paramObject) {
+    return _getNode(`strong`, paramObject);
+}
+
+function getTable(paramObject) {
+    return _getNode(`table`, paramObject);
+}
+
+function getTD(paramObject) {
+    return _getNode(`td`, paramObject);
+}
+
+function getTH(paramObject) {
+    return _getNode(`th`, paramObject);
+}
+
+function getTitle(paramObject) {
+    return _getNode(`title`, paramObject);
+}
+
+function getTR(paramObject) {
+    return _getNode(`tr`, paramObject);
+}
+
+function _getNode(type, paramObject) {
+    let node = document.createElement(type);
+    if (paramObject) {
+        let {
+            action,
+            alt,
+            ariaControls,
+            ariaExpanded,
+            ariaHidden,
+            ariaLabel,
+            ariaLabelledby,
+            checked,
+            className,
+            dataDismiss,
+            dataParent,
+            dataTarget,
+            dataToggle,
+            disabled,
+            forName,
+            height,
+            href,
+            id,
+            itemScope,
+            itemType,
+            method,
+            name,
+            placeholder,
+            rel,
+            role,
+            selected,
+            src,
+            style,
+            tabindex,
+            target,
+            title,
+            type,
+            value,
+            width,
+        } = paramObject;
+        if (action) {
+            node.setAttribute(`action`, action);
+        }
+        if (alt) {
+            node.setAttribute(`alt`, alt);
+        }
+        if (ariaControls) {
+            node.setAttribute(`aria-controls`, ariaControls);
+        }
+        if (ariaExpanded) {
+            node.setAttribute(`aria-expanded`, ariaExpanded);
+        }
+        if (ariaHidden) {
+            node.setAttribute(`aria-hidden`, ariaHidden);
+        }
+        if (ariaLabel) {
+            node.setAttribute(`aria-label`, ariaLabel);
+        }
+        if (ariaLabelledby) {
+            node.setAttribute(`aria-labelledby`, ariaLabelledby);
+        }
+        if (checked) {
+            node.setAttribute(`checked`, ``);
+        }
+        if (className) {
+            node.setAttribute(`class`, className);
+        }
+        if (dataDismiss) {
+            node.setAttribute(`data-dismiss`, dataDismiss);
+        }
+        if (dataParent) {
+            node.setAttribute(`data-parent`, dataParent);
+        }
+        if (dataTarget) {
+            node.setAttribute(`data-target`, dataTarget);
+        }
+        if (dataToggle) {
+            node.setAttribute(`data-toggle`, dataToggle);
+        }
+        if (disabled) {
+            node.setAttribute(`disabled`, ``);
+        }
+        if (forName) {
+            node.setAttribute(`for`, forName);
+        }
+        if (height) {
+            node.setAttribute(`height`, height);
+        }
+        if (href) {
+            node.setAttribute(`href`, href);
+        }
+        if (id) {
+            node.setAttribute(`id`, id);
+        }
+        if (itemScope) {
+            node.setAttribute(`itemscope`, ``);
+        }
+        if (itemType) {
+            node.setAttribute(`itemtype`, itemType);
+        }
+        if (method) {
+            node.setAttribute(`method`, method);
+        }
+        if (name) {
+            node.setAttribute(`name`, name);
+        }
+        if (placeholder) {
+            node.setAttribute(`placeholder`, placeholder);
+        }
+        if (rel) {
+            node.setAttribute(`rel`, rel);
+        }
+        if (role) {
+            node.setAttribute(`role`, role);
+        }
+        if (selected) {
+            node.setAttribute(`selected`, ``);
+        }
+        if (src) {
+            node.setAttribute(`src`, src);
+        }
+        if (style) {
+            node.setAttribute(`style`, style);
+        }
+        if (tabindex) {
+            node.setAttribute(`tabindex`, tabindex);
+        }
+        if (target) {
+            node.setAttribute(`target`, tabindex);
+        }
+        if (title) {
+            node.setAttribute(`title`, title);
+        }
+        if (type) {
+            node.setAttribute(`type`, type);
+        }
+        if (value || value === 0) {
+            node.setAttribute(`value`, value);
+        }
+        if (width) {
+            node.setAttribute(`width`, width);
+        }
+    }
+    return node;
+}
