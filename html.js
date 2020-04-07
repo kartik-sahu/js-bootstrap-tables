@@ -255,9 +255,8 @@ function _getNode(type, paramObject) {
         }
         if (value || value === 0) {
             node.setAttribute(`value`, value);
-        } else {
-            console.log({ type, value });
         }
+        console.log({ type, value });
         if (width) {
             node.setAttribute(`width`, width);
         }
