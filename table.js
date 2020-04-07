@@ -4,22 +4,22 @@ function createTable(paramObject) {
     _clearNode(divNode);
     let filterNode;
     if (addFilter) {
-        filterNode = _getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to search...` });
+        filterNode = _getTableNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to search...` });
         divNode.appendChild(filterNode);
     }
-    let limitRow = _getNode(`div`, { className: `row` });
+    let limitRow = _getTableNode(`div`, { className: `row` });
     divNode.appendChild(limitRow);
-    let limitCol = _getNode(`div`, { className: `col` });
+    let limitCol = _getTableNode(`div`, { className: `col` });
     limitRow.appendChild(limitCol);
     let limitNode = _addLimitNode(paramObject, limitCol);
-    limitCol = _getNode(`div`, { className: `col text-right` });
+    limitCol = _getTableNode(`div`, { className: `col text-right` });
     limitRow.appendChild(limitCol);
-    let countNode = _getNode(`div`);
+    let countNode = _getTableNode(`div`);
     limitCol.appendChild(countNode);
-    let tableNode = _getNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
+    let tableNode = _getTableNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
     divNode.appendChild(tableNode);
     _addTableDivision(tableNode, `thead`, headData, head2Data);
-    let bodyNode = _getNode(`tbody`, { id: `tBody` });
+    let bodyNode = _getTableNode(`tbody`, { id: `tBody` });
     tableNode.appendChild(bodyNode);
     if (addFilter) {
         _addTableDataRows({ paramObject, filterNode, limitNode, bodyNode, countNode });
@@ -49,10 +49,10 @@ function createTable(paramObject) {
 function _addLimitNode(paramObject, divNode) {
     let { addLimit } = paramObject;
     if (addLimit) {
-        let formNode = _getNode(`form`, { className: `form-inline` });
+        let formNode = _getTableNode(`form`, { className: `form-inline` });
         divNode.appendChild(formNode);
         formNode.insertAdjacentText(`beforeend`, `Show `);
-        let limitNode = _getNode(`select`, { className: `form-control` });
+        let limitNode = _getTableNode(`select`, { className: `form-control` });
         formNode.appendChild(limitNode);
         formNode.insertAdjacentText(`beforeend`, ` entries`);
         _addLimitOption(limitNode, 50, 50);
@@ -65,7 +65,7 @@ function _addLimitNode(paramObject, divNode) {
 }
 
 function _addLimitOption(limitNode, value, text) {
-    let limitOption = _getNode(`option`, { value });
+    let limitOption = _getTableNode(`option`, { value });
     limitOption.insertAdjacentText(`beforeend`, text);
     limitNode.appendChild(limitOption);
 }
@@ -76,7 +76,7 @@ function _clearNode(node) {
     }
 }
 
-function _getNode(nodeType, paramObject) {
+function _getTableNode(nodeType, paramObject) {
     let newNode = document.createElement(nodeType);
     if (paramObject) {
         let { additionalClass, align, className, colspan, id, placeholder, rowspan, text, textUrl, type, value } = paramObject;
@@ -120,13 +120,13 @@ function _getNode(nodeType, paramObject) {
 }
 
 function _addTableDivision(tableNode, divisionName, dataArray, dataArray2) {
-    let divisionNode = _getNode(divisionName);
+    let divisionNode = _getTableNode(divisionName);
     tableNode.appendChild(divisionNode);
-    let rowNode = _getNode(`tr`);
+    let rowNode = _getTableNode(`tr`);
     divisionNode.appendChild(rowNode);
     _addData(rowNode, `S.No.`, dataArray, `th`);
     if (dataArray2 && dataArray2.length) {
-        rowNode = _getNode(`tr`);
+        rowNode = _getTableNode(`tr`);
         divisionNode.appendChild(rowNode);
         _addData(rowNode, `S.No.`, dataArray2, `th`);
     }
@@ -151,7 +151,7 @@ function _addTableDataRows(paramObjectTDR) {
                 serialNumber++;
                 if (!limitNode || limitNode.value === `all` || limitNode.value >= serialNumber) {
                     limitNumber++;
-                    rowNode = _getNode(`tr`);
+                    rowNode = _getTableNode(`tr`);
                     bodyNode.appendChild(rowNode);
                     _addData(rowNode, serialNumber, currentRow, `td`);
                 }
@@ -197,10 +197,10 @@ function _filterData(filterTerm, dataArray) {
 function _addData(rowNode, serialNumber, dataArray, typeName) {
     let cellNode;
     dataArray.forEach(dataObject => {
-        cellNode = _getNode(typeName, dataObject);
+        cellNode = _getTableNode(typeName, dataObject);
         rowNode.appendChild(cellNode);
     });
-    let serialNumberNode = _getNode(typeName, { text: serialNumber });
+    let serialNumberNode = _getTableNode(typeName, { text: serialNumber });
     rowNode.insertBefore(serialNumberNode, rowNode.firstChild);
 }
 
