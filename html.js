@@ -78,6 +78,10 @@ function getLink(paramObject) {
     return _getNode(`link`, paramObject);
 }
 
+function getLI(paramObject) {
+    return _getNode(`li`, paramObject);
+}
+
 function getOption(paramObject) {
     return _getNode(`option`, paramObject);
 }
