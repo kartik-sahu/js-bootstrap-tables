@@ -130,6 +130,7 @@ function _getNode(type, paramObject) {
             alt,
             ariaControls,
             ariaExpanded,
+            ariaHaspopup,
             ariaHidden,
             ariaLabel,
             ariaLabelledby,
@@ -172,6 +173,9 @@ function _getNode(type, paramObject) {
         }
         if (ariaExpanded) {
             node.setAttribute(`aria-expanded`, ariaExpanded);
+        }
+        if (ariaHaspopup) {
+            node.setAttribute(`aria-haspopup`, ariaHaspopup);
         }
         if (ariaHidden) {
             node.setAttribute(`aria-hidden`, ariaHidden);
