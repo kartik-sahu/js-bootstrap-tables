@@ -118,6 +118,10 @@ function getTR(paramObject) {
     return _getNode(`tr`, paramObject);
 }
 
+function getUL(paramObject) {
+    return _getNode(`ul`, paramObject);
+}
+
 function _getNode(type, paramObject) {
     let node = document.createElement(type);
     if (paramObject) {
