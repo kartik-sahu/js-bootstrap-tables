@@ -257,7 +257,7 @@ function _getNode(type, paramObject) {
             node.setAttribute(`tabindex`, tabindex);
         }
         if (target) {
-            node.setAttribute(`target`, tabindex);
+            node.setAttribute(`target`, target);
         }
         if (title) {
             node.setAttribute(`title`, title);
