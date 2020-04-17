@@ -21,7 +21,9 @@ let dataRows = [
 {text: `Tarun`}
 ];
 
-DynamicTable.createTable({ divId: `tableDiv`, tableId: `tableData`, headRow, dataRows, head2Row, footRow, functionArray });
+let newDynamicTable = new DynamicTable({ divId: `tableDiv`, tableId: `tableData`, headRow, dataRows, head2Row, footRow, functionArray });
+
+newDynamicTable.createTable();
 
 # Properties
 
