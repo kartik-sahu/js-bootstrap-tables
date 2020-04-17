@@ -59,9 +59,10 @@ class DynamicTable {
             document.getElementById(`${checkboxClass}_${divisionName}`).onclick = function() {
                 currentNodeId = this.id.split(`_`)[1];
                 isChecked = this.checked;
-                document.getElementsByClassName(checkboxClass).forEach(currentNode => {
-                    currentNode.checked = isChecked;
-                });
+                let checkboxNodes = document.getElementsByClassName(checkboxClass);
+                for (let i = 0; i < checkboxNodes.length; i++) {
+                    checkboxNodes[i].checked = isChecked;
+                }
             }
         }
     }
