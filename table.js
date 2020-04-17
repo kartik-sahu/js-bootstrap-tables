@@ -50,18 +50,19 @@ class DynamicTable {
         } else {
             this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
         }
-        this._attachFunctions();
     }
 
-    _attachFunctions() {
+    _checkboxToggle(divisionName) {
         let { checkboxClass } = this.paramObject;
+        let currentNodeId, isChecked;
         if (checkboxClass) {
-            this._attachFunctionToClassNodes(checkboxClass, `click`, function() {
-                let currentNodeId = this.id.split(`_`)[1];
-                if (currentNodeId === `thead` || currentNodeId === `tfoot`) {
-                    console.log(this.checked);
-                }
-            });
+            document.getElementById(`${checkboxClass}_${divisionName}`).onclick = function() {
+                currentNodeId = this.id.split(`_`)[1];
+                isChecked = this.checked;
+                document.getElementsByClassName(checkboxClass).forEach(currentNode => {
+                    currentNode.checked = isChecked;
+                });
+            }
         }
     }
 
@@ -153,6 +154,7 @@ class DynamicTable {
             divisionNode.appendChild(rowNode);
             this._addData(rowNode, `S.No.`, dataArray2, `th`, divisionName);
         }
+        this._checkboxToggle(divisionName);
     }
 
     _addTableDataRows(paramObjectTDR) {
