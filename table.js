@@ -50,6 +50,19 @@ class DynamicTable {
         } else {
             this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
         }
+        this._attachFunctions();
+    }
+
+    _attachFunctions() {
+        let { checkboxClass } = this.paramObject;
+        if (checkboxClass) {
+            this._attachFunctionToClassNodes(checkboxClass, `click`, function() {
+                let currentNodeId = this.id.split(`_`)[1];
+                if (currentNodeId === `thead` || currentNodeId === `tfoot`) {
+                    console.log(this.checked);
+                }
+            });
+        }
     }
 
     _addLimitNode(divNode) {
@@ -134,11 +147,11 @@ class DynamicTable {
         tableNode.appendChild(divisionNode);
         let rowNode = this._getTableNode(`tr`);
         divisionNode.appendChild(rowNode);
-        this._addData(rowNode, `S.No.`, dataArray, `th`);
+        this._addData(rowNode, `S.No.`, dataArray, `th`, divisionName);
         if (dataArray2 && dataArray2.length) {
             rowNode = this._getTableNode(`tr`);
             divisionNode.appendChild(rowNode);
-            this._addData(rowNode, `S.No.`, dataArray2, `th`);
+            this._addData(rowNode, `S.No.`, dataArray2, `th`, divisionName);
         }
     }
 
@@ -163,7 +176,7 @@ class DynamicTable {
                         limitNumber++;
                         rowNode = this._getTableNode(`tr`);
                         bodyNode.appendChild(rowNode);
-                        this._addData(rowNode, serialNumber, currentRow, `td`);
+                        this._addData(rowNode, serialNumber, currentRow, `td`, serialNumber);
                     }
                 }
             });
@@ -204,7 +217,7 @@ class DynamicTable {
         return true;
     }
 
-    _addData(rowNode, serialNumber, dataArray, typeName) {
+    _addData(rowNode, serialNumber, dataArray, typeName, idSuffix) {
         let { addCheckboxes, checkboxClass } = this.paramObject;
         let cellNode;
         dataArray.forEach(dataObject => {
@@ -214,7 +227,7 @@ class DynamicTable {
         let serialNumberNode = this._getTableNode(typeName, { text: serialNumber });
         rowNode.insertBefore(serialNumberNode, rowNode.firstChild);
         if (addCheckboxes) {
-            let checkboxNode = this._getTableNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${serialNumber}`, type: `checkbox` });
+            let checkboxNode = this._getTableNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${idSuffix}`, type: `checkbox` });
             let checkboxTDNode = this._getTableNode(typeName, { subNode: checkboxNode });
             rowNode.insertBefore(checkboxTDNode, rowNode.firstChild);
         }
