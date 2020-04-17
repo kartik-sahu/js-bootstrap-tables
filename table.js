@@ -5,7 +5,7 @@ class DynamicTable {
     }
 
     createTable() {
-        let { divId, tableId, headData, dataRows, head2Data, footData, functionArray, addFilter, addCheckboxes } = this.paramObject;
+        let { divId, tableId, headData, dataRows, head2Data, footData, functionArray, addFilter } = this.paramObject;
         let divNode = document.getElementById(divId);
         this._clearNode(divNode);
         let filterNode;
@@ -204,7 +204,7 @@ class DynamicTable {
     }
 
     _addData(rowNode, serialNumber, dataArray, typeName) {
-        let { addCheckboxes } = this.paramObject;
+        let { addCheckboxes, checkboxClass } = this.paramObject;
         let cellNode;
         dataArray.forEach(dataObject => {
             cellNode = this._getTableNode(typeName, dataObject);
@@ -213,7 +213,7 @@ class DynamicTable {
         let serialNumberNode = this._getTableNode(typeName, { text: serialNumber });
         rowNode.insertBefore(serialNumberNode, rowNode.firstChild);
         if (addCheckboxes && typeName === `td`) {
-            let checkboxNode = this._getTableNode(`input`, { className: `form-control`, id: ``, type: `checkbox` });
+            let checkboxNode = this._getTableNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${serialNumber}`, type: `checkbox` });
             let checkboxTDNode = this._getTableNode(typeName, { subNode: checkboxNode });
             rowNode.insertBefore(checkboxTDNode, rowNode.firstChild);
         }
