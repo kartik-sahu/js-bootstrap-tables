@@ -129,6 +129,7 @@ class DynamicTable {
     }
 
     _addTableDivision(tableNode, divisionName, dataArray, dataArray2) {
+        let { addCheckboxes, checkboxClass } = this.paramObject;
         let divisionNode = this._getTableNode(divisionName);
         tableNode.appendChild(divisionNode);
         let rowNode = this._getTableNode(`tr`);
@@ -212,7 +213,7 @@ class DynamicTable {
         });
         let serialNumberNode = this._getTableNode(typeName, { text: serialNumber });
         rowNode.insertBefore(serialNumberNode, rowNode.firstChild);
-        if (addCheckboxes && typeName === `td`) {
+        if (addCheckboxes) {
             let checkboxNode = this._getTableNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${serialNumber}`, type: `checkbox` });
             let checkboxTDNode = this._getTableNode(typeName, { subNode: checkboxNode });
             rowNode.insertBefore(checkboxTDNode, rowNode.firstChild);
