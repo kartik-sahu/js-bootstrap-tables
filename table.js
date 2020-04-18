@@ -32,10 +32,14 @@ class DynamicTable {
         let { addFilter, addLimit } = this.paramObject;
         this._addTableDataRows();
         if (addFilter) {
-            this.filterNode.onkeyup = this._addTableDataRows;
+            this.filterNode.onkeyup = () => {
+                this._addTableDataRows();
+            }
         }
         if (addLimit) {
-            this.limitNode.onchange = this._addTableDataRows;
+            this.limitNode.onchange = () => {
+                this._addTableDataRows();
+            }
         }
     }
 
