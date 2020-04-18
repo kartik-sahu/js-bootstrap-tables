@@ -2,44 +2,40 @@ class DynamicTable {
 
     constructor(paramObject) {
         this.paramObject = paramObject;
-        this.filterNode = this._getTableNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to search...` });
         this.divNode = document.getElementById(paramObject.divId);
+        this._clearNode(this.divNode);
+        this.filterNode = this._getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to search...` });
+        this.limitNode = this._getLimitNode();
+        this.countNode = this._getNode(`div`);
+        this.bodyNode = this._getNode(`tbody`, { id: `tBody` });
     }
 
     createTable() {
-        let { divId, tableId, headData, dataRows, head2Data, footData, functionArray, addFilter, addLimit } = this.paramObject;
-        this._clearNode(this.divNode);
+        let { tableId, headData, head2Data, footData, addFilter } = this.paramObject;
         if (addFilter) {
             this.divNode.appendChild(this.filterNode);
         }
         this._addLimitRowNode();
-        let tableNode = this._getTableNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
+        let tableNode = this._getNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
         this.divNode.appendChild(tableNode);
         this._addTableDivision(tableNode, `thead`, headData, head2Data);
-        let bodyNode = this._getTableNode(`tbody`, { id: `tBody` });
-        tableNode.appendChild(bodyNode);
-        if (addFilter) {
-            this._addTableDataRows({ bodyNode, countNode });
-            this.filterNode.onkeyup = function() {
-                this._addTableDataRows({ bodyNode, countNode });
-            };
-            if (addLimit) {
-                limitNode.onchange = function() {
-                    this._addTableDataRows({ bodyNode, countNode });
-                }
-            }
-        } else {
-            this._addTableDataRows({ bodyNode, countNode });
-            if (addLimit) {
-                limitNode.onchange = function() {
-                    this._addTableDataRows({ bodyNode, countNode });
-                }
-            }
-        }
+        tableNode.appendChild(this.bodyNode);
+        this._appendTableData();
         if (footData) {
             this._addTableDivision(tableNode, `tfoot`, footData);
         } else {
             this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
+        }
+    }
+
+    _appendTableData() {
+        let { addFilter, addLimit } = this.paramObject;
+        this._addTableDataRows();
+        if (addFilter) {
+            this.filterNode.onkeyup = this._addTableDataRows;
+        }
+        if (addLimit) {
+            this.limitNode.onchange = this._addTableDataRows;
         }
     }
 
@@ -59,40 +55,44 @@ class DynamicTable {
     }
 
     _addLimitRowNode() {
-        let limitRowNode = this._getTableNode(`div`, { className: `row` });
-        this.divNode.appendChild(limitRowNode);
-        let limitCol = this._getTableNode(`div`, { className: `col text-right` });
-        limitRowNode.appendChild(limitCol);
-        let limitNode = this._addLimitNode();
-        limitCol.appendChild(limitNode);
-        limitCol = this._getTableNode(`div`, { className: `col text-right` });
-        limitRowNode.appendChild(limitCol);
-        let countNode = this._getTableNode(`div`);
-        limitCol.appendChild(countNode);
+        let rowNode = this._getNode(`div`, { className: `row` });
+        this.divNode.appendChild(rowNode);
+        this._addLimitFormNode();
+        let colNode = this._getNode(`div`, { className: `col text-right` });
+        rowNode.appendChild(colNode);
+        colNode.appendChild(this.countNode);
+        return rowNode;
     }
 
-    _addLimitNode() {
+    _addLimitFormNode() {
         let { addLimit } = this.paramObject;
+        let colNode = this._getNode(`div`, { className: `col text-right` });
+        rowNode.appendChild(colNode);
         if (addLimit) {
-            let formNode = this._getTableNode(`form`, { className: `form-inline` });
-            limitCol.appendChild(formNode);
-            formNode.insertAdjacentText(`beforeend`, `Show `);
-            let selectNode = this._getTableNode(`select`, { className: `form-control` });
-            formNode.appendChild(selectNode);
-            formNode.insertAdjacentText(`beforeend`, ` entries`);
-            this._addLimitOption(selectNode, 50, 50);
-            this._addLimitOption(selectNode, 100, 100);
-            this._addLimitOption(selectNode, 250, 250);
-            this._addLimitOption(selectNode, `all`, `ALL`);
-            return selectNode;
+            let formNode = this._getNode(`form`, { className: `form-inline` });
+            colNode.appendChild(formNode);
+            let textNode = document.createTextNode(`Show `);
+            formNode.appendChild(textNode);
+            formNode.appendChild(this.limitNode);
+            textNode = document.createTextNode(` entries`);
+            formNode.appendChild(textNode);
         }
-        return false;
+    }
+
+    _getLimitNode() {
+        let selectNode = this._getNode(`select`, { className: `form-control` });
+        this._addLimitOption(selectNode, 50, 50);
+        this._addLimitOption(selectNode, 100, 100);
+        this._addLimitOption(selectNode, 250, 250);
+        this._addLimitOption(selectNode, `all`, `ALL`);
+        return selectNode;
     }
 
     _addLimitOption(selectNode, value, text) {
-        let limitOption = this._getTableNode(`option`, { value });
-        limitOption.insertAdjacentText(`beforeend`, text);
-        selectNode.appendChild(limitOption);
+        let optionNode = this._getNode(`option`, { value });
+        selectNode.appendChild(optionNode);
+        let textNode = document.createTextNode(text);
+        optionNode.appendChild(textNode);
     }
 
     _clearNode(node) {
@@ -101,7 +101,7 @@ class DynamicTable {
         }
     }
 
-    _getTableNode(nodeType, nodeParamObject) {
+    _getNode(nodeType, nodeParamObject) {
         let newNode = document.createElement(nodeType);
         if (nodeParamObject) {
             let { additionalClass, align, className, colspan, id, placeholder, rowspan, subNode, text, textUrl, type, value } = nodeParamObject;
@@ -149,25 +149,24 @@ class DynamicTable {
 
     _addTableDivision(tableNode, divisionName, dataArray, dataArray2) {
         let { addCheckboxes, checkboxClass } = this.paramObject;
-        let divisionNode = this._getTableNode(divisionName);
+        let divisionNode = this._getNode(divisionName);
         tableNode.appendChild(divisionNode);
-        let rowNode = this._getTableNode(`tr`);
+        let rowNode = this._getNode(`tr`);
         divisionNode.appendChild(rowNode);
         this._addData(rowNode, `S.No.`, dataArray, `th`, divisionName);
         if (dataArray2 && dataArray2.length) {
-            rowNode = this._getTableNode(`tr`);
+            rowNode = this._getNode(`tr`);
             divisionNode.appendChild(rowNode);
             this._addData(rowNode, `S.No.`, dataArray2, `th`, divisionName);
         }
         this._checkboxToggle(divisionName);
     }
 
-    _addTableDataRows(paramObjectTDR) {
-        let { bodyNode, countNode } = paramObjectTDR;
+    _addTableDataRows() {
         let { dataRows, functionArray, addFilter } = this.paramObject;
-        this._clearNode(bodyNode);
+        this._clearNode(this.bodyNode);
         if (typeof dataRows === `string`) {
-            bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
+            this.bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
         } else {
             let filterTerm;
             if (addFilter) {
@@ -179,16 +178,17 @@ class DynamicTable {
             dataRows.forEach(currentRow => {
                 if (!addFilter || this._filterData(filterTerm, currentRow)) {
                     serialNumber++;
-                    if (!addLimit || limitNode.value === `all` || limitNode.value >= serialNumber) {
+                    if (!addLimit || this.limitNode.value === `all` || this.limitNode.value >= serialNumber) {
                         limitNumber++;
-                        rowNode = this._getTableNode(`tr`);
-                        bodyNode.appendChild(rowNode);
+                        rowNode = this._getNode(`tr`);
+                        this.bodyNode.appendChild(rowNode);
                         this._addData(rowNode, serialNumber, currentRow, `td`, serialNumber);
                     }
                 }
             });
-            this._clearNode(countNode);
-            countNode.insertAdjacentText(`beforeend`, `Showing 1 to ${limitNumber} of ${serialNumber} entries`);
+            this._clearNode(this.countNode);
+            let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
+            this.countNode.appendChild(textNode);
         }
         if (functionArray) {
             functionArray.forEach(currentObject => {
@@ -228,14 +228,14 @@ class DynamicTable {
         let { addCheckboxes, checkboxClass } = this.paramObject;
         let cellNode;
         dataArray.forEach(dataObject => {
-            cellNode = this._getTableNode(typeName, dataObject);
+            cellNode = this._getNode(typeName, dataObject);
             rowNode.appendChild(cellNode);
         });
-        let serialNumberNode = this._getTableNode(typeName, { text: serialNumber });
+        let serialNumberNode = this._getNode(typeName, { text: serialNumber });
         rowNode.insertBefore(serialNumberNode, rowNode.firstChild);
         if (addCheckboxes) {
-            let checkboxNode = this._getTableNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${idSuffix}`, type: `checkbox` });
-            let checkboxTDNode = this._getTableNode(typeName, { subNode: checkboxNode });
+            let checkboxNode = this._getNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${idSuffix}`, type: `checkbox` });
+            let checkboxTDNode = this._getNode(typeName, { subNode: checkboxNode });
             rowNode.insertBefore(checkboxTDNode, rowNode.firstChild);
         }
     }
