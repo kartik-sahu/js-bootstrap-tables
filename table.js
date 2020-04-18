@@ -2,46 +2,37 @@ class DynamicTable {
 
     constructor(paramObject) {
         this.paramObject = paramObject;
+        this.filterNode = this._getTableNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to search...` });
+        this.divNode = document.getElementById(paramObject.divId);
     }
 
     createTable() {
-        let { divId, tableId, headData, dataRows, head2Data, footData, functionArray, addFilter } = this.paramObject;
-        let divNode = document.getElementById(divId);
-        this._clearNode(divNode);
-        let filterNode;
+        let { divId, tableId, headData, dataRows, head2Data, footData, functionArray, addFilter, addLimit } = this.paramObject;
+        this._clearNode(this.divNode);
         if (addFilter) {
-            filterNode = this._getTableNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to search...` });
-            divNode.appendChild(filterNode);
+            this.divNode.appendChild(this.filterNode);
         }
-        let limitRow = this._getTableNode(`div`, { className: `row` });
-        divNode.appendChild(limitRow);
-        let limitCol = this._getTableNode(`div`, { className: `col` });
-        limitRow.appendChild(limitCol);
-        let limitNode = this._addLimitNode(limitCol);
-        limitCol = this._getTableNode(`div`, { className: `col text-right` });
-        limitRow.appendChild(limitCol);
-        let countNode = this._getTableNode(`div`);
-        limitCol.appendChild(countNode);
+        this._addLimitRowNode();
         let tableNode = this._getTableNode(`table`, { id: tableId, className: `table table-striped table-bordered table-hover table-sm` });
-        divNode.appendChild(tableNode);
+        this.divNode.appendChild(tableNode);
         this._addTableDivision(tableNode, `thead`, headData, head2Data);
         let bodyNode = this._getTableNode(`tbody`, { id: `tBody` });
         tableNode.appendChild(bodyNode);
         if (addFilter) {
-            this._addTableDataRows({ filterNode, limitNode, bodyNode, countNode });
-            filterNode.onkeyup = function() {
-                this._addTableDataRows({ filterNode, limitNode, bodyNode, countNode });
+            this._addTableDataRows({ bodyNode, countNode });
+            this.filterNode.onkeyup = function() {
+                this._addTableDataRows({ bodyNode, countNode });
             };
-            if (limitNode) {
+            if (addLimit) {
                 limitNode.onchange = function() {
-                    this._addTableDataRows({ filterNode, limitNode, bodyNode, countNode });
+                    this._addTableDataRows({ bodyNode, countNode });
                 }
             }
         } else {
-            this._addTableDataRows({ limitNode, bodyNode, countNode });
-            if (limitNode) {
+            this._addTableDataRows({ bodyNode, countNode });
+            if (addLimit) {
                 limitNode.onchange = function() {
-                    this._addTableDataRows({ limitNode, bodyNode, countNode });
+                    this._addTableDataRows({ bodyNode, countNode });
                 }
             }
         }
@@ -67,28 +58,41 @@ class DynamicTable {
         }
     }
 
-    _addLimitNode(divNode) {
+    _addLimitRowNode() {
+        let limitRowNode = this._getTableNode(`div`, { className: `row` });
+        this.divNode.appendChild(limitRowNode);
+        let limitCol = this._getTableNode(`div`, { className: `col text-right` });
+        limitRowNode.appendChild(limitCol);
+        let limitNode = this._addLimitNode();
+        limitCol.appendChild(limitNode);
+        limitCol = this._getTableNode(`div`, { className: `col text-right` });
+        limitRowNode.appendChild(limitCol);
+        let countNode = this._getTableNode(`div`);
+        limitCol.appendChild(countNode);
+    }
+
+    _addLimitNode() {
         let { addLimit } = this.paramObject;
         if (addLimit) {
             let formNode = this._getTableNode(`form`, { className: `form-inline` });
-            divNode.appendChild(formNode);
+            limitCol.appendChild(formNode);
             formNode.insertAdjacentText(`beforeend`, `Show `);
-            let limitNode = this._getTableNode(`select`, { className: `form-control` });
-            formNode.appendChild(limitNode);
+            let selectNode = this._getTableNode(`select`, { className: `form-control` });
+            formNode.appendChild(selectNode);
             formNode.insertAdjacentText(`beforeend`, ` entries`);
-            this._addLimitOption(limitNode, 50, 50);
-            this._addLimitOption(limitNode, 100, 100);
-            this._addLimitOption(limitNode, 250, 250);
-            this._addLimitOption(limitNode, `all`, `ALL`);
-            return limitNode;
+            this._addLimitOption(selectNode, 50, 50);
+            this._addLimitOption(selectNode, 100, 100);
+            this._addLimitOption(selectNode, 250, 250);
+            this._addLimitOption(selectNode, `all`, `ALL`);
+            return selectNode;
         }
         return false;
     }
 
-    _addLimitOption(limitNode, value, text) {
+    _addLimitOption(selectNode, value, text) {
         let limitOption = this._getTableNode(`option`, { value });
         limitOption.insertAdjacentText(`beforeend`, text);
-        limitNode.appendChild(limitOption);
+        selectNode.appendChild(limitOption);
     }
 
     _clearNode(node) {
@@ -159,23 +163,23 @@ class DynamicTable {
     }
 
     _addTableDataRows(paramObjectTDR) {
-        let { filterNode, limitNode, bodyNode, countNode } = paramObjectTDR;
-        let { dataRows, functionArray } = this.paramObject;
+        let { bodyNode, countNode } = paramObjectTDR;
+        let { dataRows, functionArray, addFilter } = this.paramObject;
         this._clearNode(bodyNode);
         if (typeof dataRows === `string`) {
             bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
         } else {
             let filterTerm;
-            if (filterNode) {
-                filterTerm = filterNode.value.toLowerCase();
+            if (addFilter) {
+                filterTerm = this.filterNode.value.toLowerCase();
             }
             let serialNumber = 0;
             let limitNumber = 0;
             let rowNode;
             dataRows.forEach(currentRow => {
-                if (!filterNode || this._filterData(filterTerm, currentRow)) {
+                if (!addFilter || this._filterData(filterTerm, currentRow)) {
                     serialNumber++;
-                    if (!limitNode || limitNode.value === `all` || limitNode.value >= serialNumber) {
+                    if (!addLimit || limitNode.value === `all` || limitNode.value >= serialNumber) {
                         limitNumber++;
                         rowNode = this._getTableNode(`tr`);
                         bodyNode.appendChild(rowNode);
