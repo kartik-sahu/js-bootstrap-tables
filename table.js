@@ -163,7 +163,7 @@ class DynamicTable {
     }
 
     _addTableDataRows() {
-        let { dataRows, functionArray, addFilter } = this.paramObject;
+        let { dataRows, functionArray, addFilter, addLimit } = this.paramObject;
         this._clearNode(this.bodyNode);
         if (typeof dataRows === `string`) {
             this.bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
