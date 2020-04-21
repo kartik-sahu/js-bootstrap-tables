@@ -155,44 +155,24 @@ class DynamicTable {
         let { addCheckboxes, checkboxClass } = this.paramObject;
         let divisionNode = this._getNode(divisionName);
         tableNode.appendChild(divisionNode);
-        let rowNode = this._getNode(`tr`);
-        divisionNode.appendChild(rowNode);
-        this._addData(rowNode, `S.No.`, dataArray, `th`, divisionName);
+        let trNode = this._getNode(`tr`);
+        divisionNode.appendChild(trNode);
+        this._addData(trNode, `S.No.`, dataArray, `th`, divisionName);
         if (dataArray2 && dataArray2.length) {
-            rowNode = this._getNode(`tr`);
-            divisionNode.appendChild(rowNode);
-            this._addData(rowNode, `S.No.`, dataArray2, `th`, divisionName);
+            trNode = this._getNode(`tr`);
+            divisionNode.appendChild(trNode);
+            this._addData(trNode, `S.No.`, dataArray2, `th`, divisionName);
         }
         this._checkboxToggle(divisionName);
     }
 
     _addTableDataRows() {
-        let { dataRows, functionArray, addFilter, addLimit } = this.paramObject;
+        let { dataRows, functionArray } = this.paramObject;
         this._clearNode(this.bodyNode);
         if (typeof dataRows === `string`) {
             this.bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
         } else {
-            let filterTerm;
-            if (addFilter) {
-                filterTerm = this.filterNode.value.toLowerCase();
-            }
-            let serialNumber = 0;
-            let limitNumber = 0;
-            let rowNode;
-            dataRows.forEach(currentRow => {
-                if (!addFilter || this._filterData(filterTerm, currentRow)) {
-                    serialNumber++;
-                    if (!addLimit || this.limitNode.value === `all` || this.limitNode.value >= serialNumber) {
-                        limitNumber++;
-                        rowNode = this._getNode(`tr`);
-                        this.bodyNode.appendChild(rowNode);
-                        this._addData(rowNode, serialNumber, currentRow, `td`, serialNumber);
-                    }
-                }
-            });
-            this._clearNode(this.countNode);
-            let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
-            this.countNode.appendChild(textNode);
+            _addTableDataRowsFromObject();
         }
         if (functionArray) {
             functionArray.forEach(currentObject => {
@@ -200,6 +180,34 @@ class DynamicTable {
                 this._attachFunctionToClassNodes(className, eventName, functionName);
             });
         }
+    }
+
+    _addTableDataRowsFromObject() {
+        let { dataRows, addFilter, addLimit } = this.paramObject;
+        let { className, data, id } = dataRows;
+        let filterTerm;
+        if (addFilter) {
+            filterTerm = this.filterNode.value.toLowerCase();
+        }
+        let serialNumber = 0;
+        let limitNumber = 0;
+        let rowNode;
+        if (data) {
+            data.forEach(currentRow => {
+                if (!addFilter || this._filterData(filterTerm, currentRow)) {
+                    serialNumber++;
+                    if (!addLimit || this.limitNode.value === `all` || this.limitNode.value >= serialNumber) {
+                        limitNumber++;
+                        rowNode = this._getNode(`tr`, { className, id });
+                        this.bodyNode.appendChild(rowNode);
+                        this._addData(rowNode, serialNumber, currentRow, `td`, serialNumber);
+                    }
+                }
+            });
+        }
+        this._clearNode(this.countNode);
+        let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
+        this.countNode.appendChild(textNode);
     }
 
     _attachFunctionToClassNodes(className, eventName, functionName) {
@@ -230,18 +238,18 @@ class DynamicTable {
 
     _addData(rowNode, serialNumber, dataArray, typeName, idSuffix) {
         let { addCheckboxes, checkboxClass } = this.paramObject;
+        if (addCheckboxes) {
+            let checkboxNode = this._getNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${idSuffix}`, type: `checkbox` });
+            let checkboxTDNode = this._getNode(typeName, { subNode: checkboxNode });
+            rowNode.appendChild(checkboxTDNode);
+        }
+        let serialNumberNode = this._getNode(typeName, { text: serialNumber });
+        rowNode.appendChild(serialNumberNode);
         let cellNode;
         dataArray.forEach(dataObject => {
             cellNode = this._getNode(typeName, dataObject);
             rowNode.appendChild(cellNode);
         });
-        let serialNumberNode = this._getNode(typeName, { text: serialNumber });
-        rowNode.insertBefore(serialNumberNode, rowNode.firstChild);
-        if (addCheckboxes) {
-            let checkboxNode = this._getNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${idSuffix}`, type: `checkbox` });
-            let checkboxTDNode = this._getNode(typeName, { subNode: checkboxNode });
-            rowNode.insertBefore(checkboxTDNode, rowNode.firstChild);
-        }
     }
 
     _addToAttribute(currentElement, name, newText) {

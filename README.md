@@ -8,18 +8,18 @@ Bootstrap
 
 # CDN
 
-<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.1.5/html.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.1.5/table.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.1.6/html.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.1.6/table.js"></script>
 
 # How to use
 
 let headRow = [{ text: `Name` }];
 
-let dataRows = [
+let dataRows = {data: [
 {text: `Pankaj`},
 {text: `Ram`},
 {text: `Tarun`}
-];
+]};
 
 let newDynamicTable = new DynamicTable({ divId: `tableDiv`, tableId: `tableData`, headRow, dataRows, head2Row, footRow, functionArray });
 
