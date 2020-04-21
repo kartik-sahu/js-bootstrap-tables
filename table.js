@@ -184,7 +184,6 @@ class DynamicTable {
 
     _addTableDataRowsFromObject() {
         let { dataRows, addFilter, addLimit } = this.paramObject;
-        let { className, data, id } = dataRows;
         let filterTerm;
         if (addFilter) {
             filterTerm = this.filterNode.value.toLowerCase();
@@ -192,19 +191,18 @@ class DynamicTable {
         let serialNumber = 0;
         let limitNumber = 0;
         let rowNode;
-        if (data) {
-            data.forEach(currentRow => {
-                if (!addFilter || this._filterData(filterTerm, currentRow)) {
-                    serialNumber++;
-                    if (!addLimit || this.limitNode.value === `all` || this.limitNode.value >= serialNumber) {
-                        limitNumber++;
-                        rowNode = this._getNode(`tr`, { className, id });
-                        this.bodyNode.appendChild(rowNode);
-                        this._addData(rowNode, serialNumber, currentRow, `td`, serialNumber);
-                    }
+        dataRows.forEach(currentRow => {
+            let { className, data, id } = currentRow;
+            if (!addFilter || this._filterData(filterTerm, currentRow.data)) {
+                serialNumber++;
+                if (!addLimit || this.limitNode.value === `all` || this.limitNode.value >= serialNumber) {
+                    limitNumber++;
+                    rowNode = this._getNode(`tr`, { className, id });
+                    this.bodyNode.appendChild(rowNode);
+                    this._addData(rowNode, serialNumber, currentRow.data, `td`, serialNumber);
                 }
-            });
-        }
+            }
+        });
         this._clearNode(this.countNode);
         let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
         this.countNode.appendChild(textNode);
