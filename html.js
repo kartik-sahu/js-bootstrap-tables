@@ -55,7 +55,7 @@ function getHead(paramObject) {
 }
 
 function getHeader(paramObject) {
-    return _getNode(`head`, paramObject);
+    return _getNode(`header`, paramObject);
 }
 
 function getHTML(paramObject) {
