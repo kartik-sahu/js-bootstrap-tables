@@ -237,8 +237,9 @@ class DynamicTable {
     _addData(rowNode, serialNumber, dataArray, typeName, trAttributes) {
         let { addCheckboxes, checkboxClass } = this.paramObject;
         if (addCheckboxes) {
+            let id;
             if (typeName === `td` && trAttributes.checkboxId) {
-                let id = trAttributes.checkboxId;
+                id = trAttributes.checkboxId;
             }
             let checkboxNode = this._getNode(`input`, { className: `form-control ${checkboxClass}`, id, type: `checkbox` });
             let checkboxTDNode = this._getNode(typeName, { subNode: checkboxNode });
