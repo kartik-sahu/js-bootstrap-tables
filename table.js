@@ -157,11 +157,11 @@ class DynamicTable {
         tableNode.appendChild(divisionNode);
         let trNode = this._getNode(`tr`);
         divisionNode.appendChild(trNode);
-        this._addData(trNode, `S.No.`, dataArray, `th`, divisionName);
+        this._addData(trNode, `S.No.`, dataArray, `th`);
         if (dataArray2 && dataArray2.length) {
             trNode = this._getNode(`tr`);
             divisionNode.appendChild(trNode);
-            this._addData(trNode, `S.No.`, dataArray2, `th`, divisionName);
+            this._addData(trNode, `S.No.`, dataArray2, `th`);
         }
         this._checkboxToggle(divisionName);
     }
@@ -199,7 +199,7 @@ class DynamicTable {
                     limitNumber++;
                     rowNode = this._getNode(`tr`, { className, id });
                     this.bodyNode.appendChild(rowNode);
-                    this._addData(rowNode, serialNumber, currentRow.data, `td`, serialNumber);
+                    this._addData(rowNode, serialNumber, currentRow.data, `td`, currentRow);
                 }
             }
         });
@@ -234,10 +234,13 @@ class DynamicTable {
         return true;
     }
 
-    _addData(rowNode, serialNumber, dataArray, typeName, idSuffix) {
+    _addData(rowNode, serialNumber, dataArray, typeName, trAttributes) {
         let { addCheckboxes, checkboxClass } = this.paramObject;
         if (addCheckboxes) {
-            let checkboxNode = this._getNode(`input`, { className: `form-control ${checkboxClass}`, id: `${checkboxClass}_${idSuffix}`, type: `checkbox` });
+            if (typeName === `td` && trAttributes.checkboxId) {
+                let id = trAttributes.checkboxId;
+            }
+            let checkboxNode = this._getNode(`input`, { className: `form-control ${checkboxClass}`, id, type: `checkbox` });
             let checkboxTDNode = this._getNode(typeName, { subNode: checkboxNode });
             rowNode.appendChild(checkboxTDNode);
         }
