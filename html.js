@@ -86,6 +86,10 @@ function getLI(paramObject) {
     return _getNode(`li`, paramObject);
 }
 
+function getNav(paramObject) {
+    return _getNode(`nav`, paramObject);
+}
+
 function getOption(paramObject) {
     return _getNode(`option`, paramObject);
 }
