@@ -172,7 +172,7 @@ class DynamicTable {
         if (typeof dataRows === `string`) {
             this.bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
         } else {
-            _addTableDataRowsFromObject();
+            this._addTableDataRowsFromObject();
         }
         if (functionArray) {
             functionArray.forEach(currentObject => {
