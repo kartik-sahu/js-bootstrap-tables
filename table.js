@@ -157,11 +157,11 @@ class DynamicTable {
         tableNode.appendChild(divisionNode);
         let trNode = this._getNode(`tr`);
         divisionNode.appendChild(trNode);
-        this._addData(trNode, `S.No.`, dataArray, `th`);
+        this._addData(trNode, `S.No.`, dataArray, `th`, divisionName);
         if (dataArray2 && dataArray2.length) {
             trNode = this._getNode(`tr`);
             divisionNode.appendChild(trNode);
-            this._addData(trNode, `S.No.`, dataArray2, `th`);
+            this._addData(trNode, `S.No.`, dataArray2, `th`, divisionName);
         }
         this._checkboxToggle(divisionName);
     }
@@ -240,6 +240,8 @@ class DynamicTable {
             let id;
             if (typeName === `td` && trAttributes.checkboxId) {
                 id = trAttributes.checkboxId;
+            } else if (typeName === `th`) {
+                id = `${checkboxClass}_${trAttributes}`;
             }
             let checkboxNode = this._getNode(`input`, { className: `form-control ${checkboxClass}`, id, type: `checkbox` });
             let checkboxTDNode = this._getNode(typeName, { subNode: checkboxNode });
