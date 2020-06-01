@@ -118,6 +118,10 @@ function getTD(paramObject) {
     return _getNode(`td`, paramObject);
 }
 
+function getTextarea(paramObject) {
+    return _getNode(`textarea`, paramObject);
+}
+
 function getTH(paramObject) {
     return _getNode(`th`, paramObject);
 }
@@ -148,6 +152,7 @@ function _getNode(type, paramObject) {
             ariaLabelledby,
             checked,
             className,
+            colspan,
             dataDismiss,
             dataParent,
             dataTarget,
@@ -164,6 +169,7 @@ function _getNode(type, paramObject) {
             placeholder,
             rel,
             role,
+            rowspan,
             selected,
             src,
             style,
@@ -203,6 +209,9 @@ function _getNode(type, paramObject) {
         }
         if (className) {
             node.setAttribute(`class`, className);
+        }
+        if (colspan) {
+            node.setAttribute(`colspan`, colspan);
         }
         if (dataDismiss) {
             node.setAttribute(`data-dismiss`, dataDismiss);
@@ -251,6 +260,9 @@ function _getNode(type, paramObject) {
         }
         if (role) {
             node.setAttribute(`role`, role);
+        }
+        if (rowspan) {
+            node.setAttribute(`rowspan`, rowspan);
         }
         if (selected) {
             node.setAttribute(`selected`, ``);
