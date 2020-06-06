@@ -8,8 +8,8 @@ Bootstrap
 
 # CDN
 
-<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.2.4/html.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.2.4/table.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.2.5/html.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.2.5/table.js"></script>
 
 # How to use
 
