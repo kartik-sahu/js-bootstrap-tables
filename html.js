@@ -168,11 +168,10 @@ function _getNode(type, paramObject) {
             forName,
             height,
             href,
-            htmlFor,
             id,
-            itemProp,
-            itemScope,
-            itemType,
+            itemprop,
+            itemscope,
+            itemtype,
             method,
             name,
             placeholder,
@@ -256,20 +255,17 @@ function _getNode(type, paramObject) {
         if (href) {
             node.setAttribute(`href`, href);
         }
-        if (htmlFor) {
-            node.setAttribute(`for`, htmlFor);
-        }
         if (id) {
             node.setAttribute(`id`, id);
         }
-        if (itemProp) {
-            node.setAttribute(`itemprop`, ``);
+        if (itemprop) {
+            node.setAttribute(`itemprop`, itemprop);
         }
-        if (itemScope) {
+        if (itemscope) {
             node.setAttribute(`itemscope`, ``);
         }
-        if (itemType) {
-            node.setAttribute(`itemtype`, itemType);
+        if (itemtype) {
+            node.setAttribute(`itemtype`, itemtype);
         }
         if (method) {
             node.setAttribute(`method`, method);
