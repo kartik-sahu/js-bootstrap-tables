@@ -2,7 +2,7 @@ class DynamicTable {
 
     constructor(paramObject) {
         this.paramObject = paramObject;
-        this.divNode = document.getElementById(this.paramObject.divId);
+        this.divNode = this._getNode("div");
         this._clearNode(this.divNode);
         this.filterNode = this._getNode(`input`, { type: `text`, className: `form-control`, placeholder: `Type here to search...` });
         this.limitNode = this._getLimitNode();
@@ -26,6 +26,7 @@ class DynamicTable {
         } else {
             this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
         }
+        return this.divNode;
     }
 
     _appendTableData() {

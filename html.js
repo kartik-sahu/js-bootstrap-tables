@@ -146,6 +146,7 @@ function _getNode(type, paramObject) {
     let node = document.createElement(type);
     if (paramObject) {
         let {
+            accept,
             action,
             alt,
             ariaControls,
@@ -168,8 +169,9 @@ function _getNode(type, paramObject) {
             height,
             href,
             id,
-            itemScope,
-            itemType,
+            itemprop,
+            itemscope,
+            itemtype,
             method,
             name,
             placeholder,
@@ -187,6 +189,9 @@ function _getNode(type, paramObject) {
             value,
             width,
         } = paramObject;
+        if (accept) {
+            node.setAttribute(`accept`, accept);
+        }
         if (action) {
             node.setAttribute(`action`, action);
         }
@@ -253,11 +258,14 @@ function _getNode(type, paramObject) {
         if (id) {
             node.setAttribute(`id`, id);
         }
-        if (itemScope) {
+        if (itemprop) {
+            node.setAttribute(`itemprop`, itemprop);
+        }
+        if (itemscope) {
             node.setAttribute(`itemscope`, ``);
         }
-        if (itemType) {
-            node.setAttribute(`itemtype`, itemType);
+        if (itemtype) {
+            node.setAttribute(`itemtype`, itemtype);
         }
         if (method) {
             node.setAttribute(`method`, method);
