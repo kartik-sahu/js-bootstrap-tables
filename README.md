@@ -8,8 +8,8 @@ Bootstrap
 
 # CDN
 
-<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.2.5/html.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.2.5/table.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.2.6/html.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/TaxHeal-in/js-bootstrap-tables@0.2.6/table.js"></script>
 
 # How to use
 
@@ -27,7 +27,6 @@ id
 };
 
 let newDynamicTable = new DynamicTable({
-divId: `tableDiv`,
 tableId: `tableData`,
 headRow,
 dataRows,
@@ -40,7 +39,7 @@ addCheckboxes: true,
 checkboxClass
 });
 
-newDynamicTable.createTable();
+let newDynamicTableNode = newDynamicTable.createTable();
 
 # Properties
 

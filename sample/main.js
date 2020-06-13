@@ -1,5 +1,4 @@
 let newDynamicTable = new DynamicTable({
-    divId: `tableDiv`,
     tableId: `tableData`,
     headRow,
     dataRows,
@@ -12,4 +11,6 @@ let newDynamicTable = new DynamicTable({
     checkboxClass
 });
 
-newDynamicTable.createTable();
+let newDynamicTableNode = newDynamicTable.createTable();
+let divNode = document.getElementById(`tableDiv`);
+divNode.appendChild(newDynamicTableNode);
