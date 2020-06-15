@@ -23,7 +23,8 @@ class DynamicTable {
             headData,
             head2Data,
             footData,
-            addFilter
+            addFilter,
+            functionArray
         } = this.paramObject;
         if (addFilter) {
             this.divNode.appendChild(this.filterNode);
@@ -41,6 +42,16 @@ class DynamicTable {
             this._addTableDivision(tableNode, `tfoot`, footData);
         } else {
             this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
+        }
+        if (functionArray) {
+            functionArray.forEach(currentObject => {
+                let {
+                    className,
+                    eventName,
+                    functionName
+                } = currentObject;
+                this._attachFunctionToClassNodes(this.divNode,className, eventName, functionName);
+            });
         }
         return this.divNode;
     }
@@ -228,16 +239,6 @@ class DynamicTable {
         } else {
             this._addTableDataRowsFromObject();
         }
-        if (functionArray) {
-            functionArray.forEach(currentObject => {
-                let {
-                    className,
-                    eventName,
-                    functionName
-                } = currentObject;
-                this._attachFunctionToClassNodes(className, eventName, functionName);
-            });
-        }
     }
 
     _addTableDataRowsFromObject() {
@@ -277,8 +278,8 @@ class DynamicTable {
         this.countNode.appendChild(textNode);
     }
 
-    _attachFunctionToClassNodes(className, eventName, functionName) {
-        let classNodes = document.getElementsByClassName(className);
+    _attachFunctionToClassNodes(baseNode,className, eventName, functionName) {
+        let classNodes = baseNode.querySelectorAll(`.${className}`);
         Array.from(classNodes).forEach(element => {
             element.removeEventListener(eventName, functionName);
             element.addEventListener(eventName, functionName);
