@@ -43,16 +43,6 @@ class DynamicTable {
         } else {
             this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
         }
-        if (functionArray) {
-            functionArray.forEach(currentObject => {
-                let {
-                    className,
-                    eventName,
-                    functionName
-                } = currentObject;
-                this._attachFunctionToClassNodes(this.divNode,className, eventName, functionName);
-            });
-        }
         return this.divNode;
     }
 
@@ -238,6 +228,16 @@ class DynamicTable {
             this.bodyNode.insertAdjacentHTML(`beforeend`, dataRows);
         } else {
             this._addTableDataRowsFromObject();
+        }
+        if (functionArray) {
+            functionArray.forEach(currentObject => {
+                let {
+                    className,
+                    eventName,
+                    functionName
+                } = currentObject;
+                this._attachFunctionToClassNodes(this.bodyNode,className, eventName, functionName);
+            });
         }
     }
 
