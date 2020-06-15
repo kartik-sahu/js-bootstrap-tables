@@ -70,7 +70,7 @@ class DynamicTable {
         let currentNodeId, isChecked;
         let checkBoxArray = this.checkBoxArray;
         if (checkboxClass) {
-            checkboxNode.onclick = function () {
+            checkboxNode.onclick = function() {
                 currentNodeId = this.id.split(`_`)[1];
                 isChecked = this.checked;
                 for (let i = 0; i < checkBoxArray.length; i++) {
