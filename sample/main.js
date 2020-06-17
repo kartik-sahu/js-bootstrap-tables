@@ -5,6 +5,8 @@ let newDynamicTable = new DynamicTable({
     head2Row,
     footRow,
     functionArray,
+    addRowCount:true,
+    addHeadDataAtBottom:true,
     addFilter: true,
     addLimit: true,
     addCheckboxes: true,

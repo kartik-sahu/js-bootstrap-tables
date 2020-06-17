@@ -24,7 +24,8 @@ class DynamicTable {
             head2Data,
             footData,
             addFilter,
-            functionArray
+            functionArray,
+            addHeadDataAtBottom
         } = this.paramObject;
         if (addFilter) {
             this.divNode.appendChild(this.filterNode);
@@ -41,7 +42,9 @@ class DynamicTable {
         if (footData) {
             this._addTableDivision(tableNode, `tfoot`, footData);
         } else {
-            this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
+            if(addHeadDataAtBottom){
+                this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
+            }
         }
         return this.divNode;
     }
@@ -204,7 +207,7 @@ class DynamicTable {
     _addTableDivision(tableNode, divisionName, dataArray, dataArray2) {
         let {
             addCheckboxes,
-            checkboxClass
+            checkboxClass,
         } = this.paramObject;
         let divisionNode = this._getNode(divisionName);
         tableNode.appendChild(divisionNode);
@@ -245,7 +248,8 @@ class DynamicTable {
         let {
             dataRows,
             addFilter,
-            addLimit
+            addLimit,
+            addRowCount
         } = this.paramObject;
         let filterTerm;
         if (addFilter) {
@@ -274,8 +278,10 @@ class DynamicTable {
             }
         });
         this._clearNode(this.countNode);
-        let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
-        this.countNode.appendChild(textNode);
+        if(addRowCount){
+            let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
+            this.countNode.appendChild(textNode);
+        }
     }
 
     _attachFunctionToClassNodes(baseNode,className, eventName, functionName) {
