@@ -1,5 +1,4 @@
 class DynamicTable {
-
     constructor(paramObject) {
         this.paramObject = paramObject;
         this.divNode = this._getNode(`div`);
@@ -16,7 +15,6 @@ class DynamicTable {
         });
         this.checkBoxArray = [];
     }
-
     createTable() {
         let {
             tableId,
@@ -45,7 +43,6 @@ class DynamicTable {
         }
         return this.divNode;
     }
-
     _appendTableData() {
         let {
             addFilter,
@@ -63,7 +60,6 @@ class DynamicTable {
             }
         }
     }
-
     _checkboxToggle(divisionName, checkboxNode) {
         let {
             checkboxClass
@@ -80,7 +76,6 @@ class DynamicTable {
             }
         }
     }
-
     _addLimitRowNode() {
         let rowNode = this._getNode(`div`, {
             className: `row`
@@ -94,7 +89,6 @@ class DynamicTable {
         colNode.appendChild(this.countNode);
         return rowNode;
     }
-
     _addLimitFormNode(rowNode) {
         let {
             addLimit
@@ -115,7 +109,6 @@ class DynamicTable {
             formNode.appendChild(textNode);
         }
     }
-
     _getLimitNode() {
         let selectNode = this._getNode(`select`, {
             className: `form-control`
@@ -126,7 +119,6 @@ class DynamicTable {
         this._addLimitOption(selectNode, `all`, `ALL`);
         return selectNode;
     }
-
     _addLimitOption(selectNode, value, text) {
         let optionNode = this._getNode(`option`, {
             value
@@ -135,13 +127,11 @@ class DynamicTable {
         let textNode = document.createTextNode(text);
         optionNode.appendChild(textNode);
     }
-
     _clearNode(node) {
         while (node.firstChild) {
             node.removeChild(node.firstChild);
         }
     }
-
     _getNode(nodeType, nodeParamObject) {
         let newNode = document.createElement(nodeType);
         if (nodeParamObject) {
@@ -200,7 +190,6 @@ class DynamicTable {
         }
         return newNode;
     }
-
     _addTableDivision(tableNode, divisionName, dataArray, dataArray2) {
         let {
             addCheckboxes,
@@ -217,7 +206,6 @@ class DynamicTable {
             this._addData(trNode, `S.No.`, dataArray2, `th`, divisionName);
         }
     }
-
     _addTableDataRows() {
         let {
             dataRows,
@@ -236,11 +224,10 @@ class DynamicTable {
                     eventName,
                     functionName
                 } = currentObject;
-                this._attachFunctionToClassNodes(this.bodyNode,className, eventName, functionName);
+                this._attachFunctionToClassNodes(this.bodyNode, className, eventName, functionName);
             });
         }
     }
-
     _addTableDataRowsFromObject() {
         let {
             dataRows,
@@ -277,15 +264,13 @@ class DynamicTable {
         let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
         this.countNode.appendChild(textNode);
     }
-
-    _attachFunctionToClassNodes(baseNode,className, eventName, functionName) {
+    _attachFunctionToClassNodes(baseNode, className, eventName, functionName) {
         let classNodes = baseNode.querySelectorAll(`.${className}`);
         Array.from(classNodes).forEach(element => {
             element.removeEventListener(eventName, functionName);
             element.addEventListener(eventName, functionName);
         });
     }
-
     _filterData(filterTerm, dataArray) {
         let isDisplay = false;
         let isFilter = false;
@@ -305,7 +290,6 @@ class DynamicTable {
         }
         return true;
     }
-
     _addData(rowNode, serialNumber, dataArray, typeName, trAttributes) {
         let {
             addCheckboxes,
@@ -324,8 +308,7 @@ class DynamicTable {
                 type: `checkbox`
             });
             this.checkBoxArray.push(checkboxNode);
-            if (trAttributes === `thead` || trAttributes === `tfoot`)
-                this._checkboxToggle(trAttributes, checkboxNode);
+            if (trAttributes === `thead` || trAttributes === `tfoot`) this._checkboxToggle(trAttributes, checkboxNode);
             let checkboxTDNode = this._getNode(typeName, {
                 subNode: checkboxNode
             });
@@ -341,7 +324,6 @@ class DynamicTable {
             rowNode.appendChild(cellNode);
         });
     }
-
     _addToAttribute(currentElement, name, newText) {
         let oldValue = currentElement.getAttribute(name);
         let newValue;
@@ -352,5 +334,4 @@ class DynamicTable {
         }
         return currentElement.setAttribute(name, newValue)
     }
-
 }
