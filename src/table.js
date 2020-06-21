@@ -9,11 +9,18 @@ class DynamicTable {
             placeholder: `Type here to search...`
         });
         this.limitNode = this._getLimitNode();
+        this.loadMore = this._getNode('button',{
+            className:`btn btn-primary`,
+            text:`Load More`,
+            type:`button`
+        });
         this.countNode = this._getNode(`div`);
         this.bodyNode = this._getNode(`tbody`, {
             id: `tBody`
         });
         this.checkBoxArray = [];
+        this.isClicked=false;
+        this.extraRowsCount=0;
     }
     createTable() {
         let {
@@ -22,7 +29,8 @@ class DynamicTable {
             head2Data,
             footData,
             addFilter,
-            functionArray
+            functionArray,
+            addHeadDataAtBottom
         } = this.paramObject;
         if (addFilter) {
             this.divNode.appendChild(this.filterNode);
@@ -39,7 +47,9 @@ class DynamicTable {
         if (footData) {
             this._addTableDivision(tableNode, `tfoot`, footData);
         } else {
-            this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
+            if(addHeadDataAtBottom){
+                this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
+            }
         }
         return this.divNode;
     }
@@ -56,8 +66,13 @@ class DynamicTable {
         }
         if (addLimit) {
             this.limitNode.onchange = () => {
+                this.extraRowsCount=0;
                 this._addTableDataRows();
             }
+        }
+        this.loadMore.onclick=()=>{
+            this.isClicked=true;
+            this._addTableDataRows();
         }
     }
     _checkboxToggle(divisionName, checkboxNode) {
@@ -193,7 +208,7 @@ class DynamicTable {
     _addTableDivision(tableNode, divisionName, dataArray, dataArray2) {
         let {
             addCheckboxes,
-            checkboxClass
+            checkboxClass,
         } = this.paramObject;
         let divisionNode = this._getNode(divisionName);
         tableNode.appendChild(divisionNode);
@@ -232,7 +247,10 @@ class DynamicTable {
         let {
             dataRows,
             addFilter,
-            addLimit
+            addLimit,
+            addRowCount,
+            headData,
+            addCheckboxes
         } = this.paramObject;
         let filterTerm;
         if (addFilter) {
@@ -241,6 +259,9 @@ class DynamicTable {
         let serialNumber = 0;
         let limitNumber = 0;
         let rowNode;
+        if(this.isClicked){
+            this.extraRowsCount+=parseInt(this.limitNode.value);
+        }
         dataRows.forEach(currentRow => {
             let {
                 className,
@@ -249,7 +270,7 @@ class DynamicTable {
             } = currentRow;
             if (!addFilter || this._filterData(filterTerm, currentRow.data)) {
                 serialNumber++;
-                if (!addLimit || this.limitNode.value === `all` || this.limitNode.value >= serialNumber) {
+                if (!addLimit || this.limitNode.value === `all` || (parseInt(this.limitNode.value) + this.extraRowsCount) >= serialNumber) {
                     limitNumber++;
                     rowNode = this._getNode(`tr`, {
                         className,
@@ -260,9 +281,33 @@ class DynamicTable {
                 }
             }
         });
+        rowNode = this._getNode(`tr`);
+        let colspanForButton=(1+headData.length);
+        if(addCheckboxes){
+            colspanForButton+=1
+        }
+        let columnNode=this._getNode(`td`,{
+            colspan:colspanForButton
+        });
+        let center=this._getNode(`center`);
+        center.appendChild(this.loadMore);
+        columnNode.appendChild(center);
+        rowNode.appendChild(columnNode);
+        this.bodyNode.appendChild(rowNode);
+        if(this.isClicked){
+            this.isClicked=false;
+        }
+        if(limitNumber===serialNumber){
+            this.loadMore.style.display=`none`;
+        }
+        else{
+            this.loadMore.style.display=``;
+        }
         this._clearNode(this.countNode);
-        let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
-        this.countNode.appendChild(textNode);
+        if(addRowCount){
+            let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
+            this.countNode.appendChild(textNode);
+        }
     }
     _attachFunctionToClassNodes(baseNode, className, eventName, functionName) {
         let classNodes = baseNode.querySelectorAll(`.${className}`);
