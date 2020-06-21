@@ -1,6 +1,14 @@
+let headData=[{text:"Name"}];
+let dataRows=[];
+for(i=0;i<300;i++){
+    let currentRow=[{text:"Hello World"}];
+    dataRows.push({
+            data: currentRow
+    });
+}
 let newDynamicTable = new DynamicTable({
     tableId: `tableData`,
-    headRow,
+    headData,
     dataRows,
     head2Row,
     footRow,
