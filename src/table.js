@@ -9,18 +9,18 @@ class DynamicTable {
             placeholder: `Type here to search...`
         });
         this.limitNode = this._getLimitNode();
-        this.loadMore = this._getNode('button',{
-            className:`btn btn-primary`,
-            text:`Load More`,
-            type:`button`
+        this.loadMore = this._getNode('button', {
+            className: `btn btn-primary`,
+            text: `Load More`,
+            type: `button`
         });
         this.countNode = this._getNode(`div`);
         this.bodyNode = this._getNode(`tbody`, {
             id: `tBody`
         });
         this.checkBoxArray = [];
-        this.isClicked=false;
-        this.extraRowsCount=0;
+        this.isClicked = false;
+        this.extraRowsCount = 0;
     }
     createTable() {
         let {
@@ -47,7 +47,7 @@ class DynamicTable {
         if (footData) {
             this._addTableDivision(tableNode, `tfoot`, footData);
         } else {
-            if(addHeadDataAtBottom){
+            if (addHeadDataAtBottom) {
                 this._addTableDivision(tableNode, `tfoot`, headData, head2Data);
             }
         }
@@ -66,12 +66,12 @@ class DynamicTable {
         }
         if (addLimit) {
             this.limitNode.onchange = () => {
-                this.extraRowsCount=0;
+                this.extraRowsCount = 0;
                 this._addTableDataRows();
             }
         }
-        this.loadMore.onclick=()=>{
-            this.isClicked=true;
+        this.loadMore.onclick = () => {
+            this.isClicked = true;
             this._addTableDataRows();
         }
     }
@@ -259,8 +259,8 @@ class DynamicTable {
         let serialNumber = 0;
         let limitNumber = 0;
         let rowNode;
-        if(this.isClicked){
-            this.extraRowsCount+=parseInt(this.limitNode.value);
+        if (this.isClicked) {
+            this.extraRowsCount += parseInt(this.limitNode.value);
         }
         dataRows.forEach(currentRow => {
             let {
@@ -282,29 +282,28 @@ class DynamicTable {
             }
         });
         rowNode = this._getNode(`tr`);
-        let colspanForButton=(1+headData.length);
-        if(addCheckboxes){
-            colspanForButton+=1
+        let colspanForButton = (1 + headData.length);
+        if (addCheckboxes) {
+            colspanForButton += 1
         }
-        let columnNode=this._getNode(`td`,{
-            colspan:colspanForButton
+        let columnNode = this._getNode(`td`, {
+            colspan: colspanForButton
         });
-        let center=this._getNode(`center`);
+        let center = this._getNode(`center`);
         center.appendChild(this.loadMore);
         columnNode.appendChild(center);
         rowNode.appendChild(columnNode);
         this.bodyNode.appendChild(rowNode);
-        if(this.isClicked){
-            this.isClicked=false;
+        if (this.isClicked) {
+            this.isClicked = false;
         }
-        if(limitNumber===serialNumber){
-            this.loadMore.style.display=`none`;
-        }
-        else{
-            this.loadMore.style.display=``;
+        if (limitNumber === serialNumber) {
+            this.loadMore.style.display = `none`;
+        } else {
+            this.loadMore.style.display = ``;
         }
         this._clearNode(this.countNode);
-        if(addRowCount){
+        if (addRowCount) {
             let textNode = document.createTextNode(`Showing 1 to ${limitNumber} of ${serialNumber} entries`);
             this.countNode.appendChild(textNode);
         }
