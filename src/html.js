@@ -114,6 +114,10 @@ function getStrong(paramObject) {
     return _getNode(`strong`, paramObject);
 }
 
+function getStyle(paramObject){
+    return _getNode(`style`,paramObject);
+}
+
 function getTable(paramObject) {
     return _getNode(`table`, paramObject);
 }
