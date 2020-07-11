@@ -114,8 +114,8 @@ function getStrong(paramObject) {
     return _getNode(`strong`, paramObject);
 }
 
-function getStyle(paramObject){
-    return _getNode(`style`,paramObject);
+function getStyle(paramObject) {
+    return _getNode(`style`, paramObject);
 }
 
 function getTable(paramObject) {
@@ -171,6 +171,7 @@ function _getNode(type, paramObject) {
             disabled,
             forName,
             height,
+            hidden,
             href,
             id,
             itemprop,
@@ -255,6 +256,9 @@ function _getNode(type, paramObject) {
         }
         if (height) {
             node.setAttribute(`height`, height);
+        }
+        if (hidden) {
+            node.setAttribute(`hidden`, ``);
         }
         if (href) {
             node.setAttribute(`href`, href);
