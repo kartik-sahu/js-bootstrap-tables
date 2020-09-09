@@ -94,6 +94,10 @@ function getNav(paramObject) {
     return _getNode(`nav`, paramObject);
 }
 
+function getOL(paramObject) {
+    return _getNode(`ol`, paramObject);
+}
+
 function getOption(paramObject) {
     return _getNode(`option`, paramObject);
 }
