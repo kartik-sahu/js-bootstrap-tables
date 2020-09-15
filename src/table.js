@@ -33,7 +33,7 @@ class DynamicTable {
             addHeadDataAtBottom
         } = this.paramObject;
         if (addFilter) {
-            this.divNode.appendChild(this.filterNode);
+            this.divNode.appendChild(this.filterNode)
         }
         this._addLimitRowNode();
         let tableNode = this._getNode(`table`, {
