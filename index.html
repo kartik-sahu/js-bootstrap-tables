@@ -6,10 +6,16 @@
   <title>Dynamic Table</title>
 </head>
 <body>
-  <input type="button" id="create" value="Click here" onclick="Javascript:createTable()">
+  <h1>Dynamic Table Generator</h1>
+  <h3>Enter the number of Rows and Columns</h3>
+  <form action="/" onsubmit="return generateTable()">
+    <input type="text" id="rows" placeholder="Number of Rows">
+    <input type="text" id="cols" placeholder="Number of Columns">
+    <input type="submit" value="Generate Table">
+  </form>
   <script src="src/table.js" charset="utf-8"></script>
   <script src="src/html.js" charset="utf-8"></script>
   <script src="src/autocomplete.js" charset="utf-8"></script>
+  <script src="src/app.js" charset="utf-8"></script>
 </body>
-
 </html>
